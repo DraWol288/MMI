@@ -532,6 +532,101 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+/* ===== МОБИЛЬНЫЕ КНОПКИ УПРАВЛЕНИЯ ===== */
+.mobile-controls {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 0 10px;
+  flex-wrap: wrap;
+}
+
+.mobile-btn {
+  background: linear-gradient(135deg, #ff3366, #cc0022);
+  border: 3px solid #ff8899;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 
+    0 0 25px #ff0033, 
+    inset 0 0 15px rgba(255,255,255,0.2),
+    0 6px 0 #880022;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.1s, box-shadow 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-btn:active {
+  transform: translateY(4px);
+  box-shadow: 
+    0 0 30px #ff3366, 
+    inset 0 0 15px rgba(255,255,255,0.3),
+    0 2px 0 #880022;
+}
+
+.mobile-btn-jump {
+  width: 140px;
+  height: 80px;
+  border-radius: 40px;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #ffcc00, #cc8800);
+  border-color: #ffee88;
+  box-shadow: 
+    0 0 25px #ffaa00, 
+    inset 0 0 15px rgba(255,255,255,0.3),
+    0 6px 0 #885500;
+}
+
+.mobile-btn-jump:active {
+  box-shadow: 
+    0 0 35px #ffcc00, 
+    inset 0 0 20px rgba(255,255,255,0.4),
+    0 2px 0 #885500;
+}
+
+/* Показываем кнопки только на мобильных и планшетах */
+@media (max-width: 1024px), (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+  }
+  
+  /* Отключаем скролл страницы при нажатии на кнопки */
+  #gameCanvas {
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
+  }
+  
+  .mobile-btn-jump {
+    width: 120px;
+    height: 70px;
+    font-size: 0.9rem;
+  }
+  
+  .mobile-controls {
+    gap: 10px;
+    margin-top: 15px;
+  }
+}
+
 function startGame() { initGame(); }
 
 initGame();
