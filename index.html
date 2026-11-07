@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="only light">
+<title>С Новым Годом, Матвей! 🎆</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== WISH SCREEN ===== -->
+<div id="wishScreen">
+  <h1 class="wish-title">✦ МОЛИТВА ✦</h1>
+  <p class="wish-subtitle">Привет, Матвей! 🎄<br>Настал момент новогодней молитвы.<br>Испытай удачу — выпадут подарки судьбы!</p>
+  <button class="wish-btn" onclick="doWish()">🌟 Помолиться ×10 🌟</button>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div id="resultsScreen">
+  <button class="close-results" onclick="closeResults()">✕</button>
+  <div class="cards-grid" id="cardsGrid"></div>
+  <div class="results-actions">
+    <button class="wish-btn" onclick="goToMain()">🎉 Перейти на сайт 🎉</button>
+    <button class="results-secondary" onclick="doWishAgain()">🌟 Помолиться ещё раз</button>
+  </div>
+</div>
+
+<!-- ===== CONGRATULATIONS ===== -->
+<div class="congrats-banner" id="congratsBanner">
+  <h2>🎉 ПОЗДРАВЛЯЮ! 🎉</h2>
+  <p>Ты выполнил ВСЕ ежедневные задания!<br>Матвей, ты настоящий герой нового года! 🏆<br>Пусть 2026 будет легендарным! 🎄✨</p>
+  <button class="congrats-close" onclick="closeCongrats()">Спасибо! 🎊</button>
+</div>
+
+<!-- ===== PAIMON ===== -->
+<div class="paimon-menu">
+  <div class="paimon-avatar" onclick="togglePaimon()" title="Меню Паймон">🧚</div>
+  <div class="paimon-panel" id="paimonPanel">
+    <h4>Меню Паймон</h4>
+    <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
+    <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
+    <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div class="modal-overlay" id="tasksModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('tasksModal')">✕</button>
+    <h3>📋 Задания на Новый Год</h3>
+    <div class="task-item">✅ Съесть 1 мандаринку (минимум!)</div>
+    <div class="task-item">✅ Поздравить всех друзей с Новым Годом</div>
+    <div class="task-item">✅ Загадать желание под бой курантов</div>
+    <div class="task-item">✅ Посмотреть салют</div>
+    <div class="task-item">✅ Выспаться 8+ часов</div>
+    <div class="task-item">✅ Найти крутой лут в жизни</div>
+    <div class="task-item done">✅ Быть легендарным (уже выполнено!)</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="inventoryModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('inventoryModal')">✕</button>
+    <h3>🎒 Инвентарь</h3>
+    <div class="inventory-grid">
+      <div class="gift-card">
+        <div class="gift-image">
+          <img src="" alt="Подарок 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="gift-placeholder" style="display:none">🎁</div>
+        </div>
+        <div class="gift-info">
+          <h4>Подарок №1</h4>
+          <p>Здесь будет описание подарка</p>
+        </div>
+      </div>
+      <div class="gift-card">
+        <div class="gift-image">
+          <img src="" alt="Подарок 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="gift-placeholder" style="display:none">🍊</div>
+        </div>
+        <div class="gift-info">
+          <h4>Подарок №2</h4>
+          <p>Здесь будет описание подарка</p>
+        </div>
+      </div>
+      <div class="gift-card">
+        <div class="gift-image">
+          <img src="" alt="Подарок 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="gift-placeholder" style="display:none">💎</div>
+        </div>
+        <div class="gift-info">
+          <h4>Подарок №3</h4>
+          <p>Здесь будет описание подарка</p>
+        </div>
+      </div>
+      <div class="gift-card">
+        <div class="gift-image">
+          <img src="" alt="Подарок 4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="gift-placeholder" style="display:none">🎄</div>
+        </div>
+        <div class="gift-info">
+          <h4>Подарок №4</h4>
+          <p>Здесь будет описание подарка</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mailModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('mailModal')">✕</button>
+    <h3>✉️ Личное послание</h3>
+    <div class="mail-layout">
+      <!-- ВСТАВЬ СЮДА ПУТЬ К КАРТИНКЕ МАТВЕЯ (например: matvey.png) -->
+      <img class="mail-character-img" src="matvey.png" alt="Матвей" onerror="this.style.display='none'">
+      
+      <div class="mail-letter">
+        <p>Дорогой Матвей!</p>
+        <br>
+        <p>С Новым Годом! 🎄✨</p>
+        <br>
+        <p>Хочу пожелать тебе в новом году:</p>
+        <p>🌟 5★ удачи в каждом дне,<br>
+        🎁 крутого лута в жизни,<br>
+        🚀 года без багов и зависаний,<br>
+        💪 здоровья, как у Гео-щита,<br>
+        🔥 энергии, как у Пиро-персонажа,<br>
+        и чтобы каждый день был эпичным, как рейд-босс!</p>
+        <br>
+        <p>Пусть все твои молитвы сбываются с первого раза, а крит-удача всегда будет на твоей стороне. Спасибо, что ты есть — ты классный друг и одногруппник!</p>
+        <br>
+        <p>С Новым Годом! 🎆</p>
+        <div class="signature">— Твой друг 🧚‍♂️</div>
+      </div>
+    </div>
+    
+    <!-- ===== ФОРМА ОТВЕТА С FORMSPREE ===== -->
+    <div class="reply-form">
+      <h4>💌 Ответить на письмо</h4>
+      <!-- 
+        ВСТАВЬ СВОЙ ID ИЗ FORMSPREE:
+        Замени "ВАШ_ID" на свой код, например "mzzbqwer"
+        Получить ID: зарегистрируйся на formspree.io → New Form → скопируй URL
+      -->
+      <form id="replyForm" action="https://formspree.io/f/ВАШ_ID" method="POST">
+        <input type="text" name="name" id="replyName" placeholder="Твоё имя..." maxlength="50" required>
+        <textarea name="message" id="replyMessage" placeholder="Напиши своё сообщение..." maxlength="500" required></textarea>
+        <button type="submit" class="reply-submit" id="replyBtn">📤 Отправить</button>
+      </form>
+      <div class="reply-success" id="replySuccess">
+        ✅ Сообщение отправлено! Спасибо за ответ, Матвей! 🎄
+      </div>
+      <div class="reply-error" id="replyError">
+        ❌ Ошибка отправки. Попробуй ещё раз!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN SITE ===== -->
+<div class="container">
+  <section class="hero">
+    <!-- ВСТАВЬ СЮДА ПУТЬ К КАРТИНКЕ МАТВЕЯ (например: matvey.png) -->
+    <img class="hero-character-img" src="matvey.png" alt="Матвей" onerror="this.style.display='none'">
+    
+    <div class="hero-text">
+      <h1>С Новым Годом, Матвей! 🎄</h1>
+      <p>Пусть новый год будет легендарным — как 5★ дроп с первой молитвы!</p>
+      <button class="wish-btn" onclick="reopenWish()">🌟 Помолиться снова 🌟</button>
+    </div>
+  </section>
+
+  <div class="tree-section">
+    <div class="neon-tree">
+      <div class="tree-star">⭐</div>
+      <div class="tree-layer">▲</div>
+      <div class="tree-layer">▲▲</div>
+      <div class="tree-layer">▲▲▲</div>
+      <div class="tree-layer">▲▲▲▲</div>
+      <div class="tree-trunk">▮▮</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2 class="section-title">⚔️ Ежедневные Задания</h2>
+    <div id="commissionsList"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🔮 Элементальная реакция «Поздравление»</h2>
+    <p class="elements-desc">
+      Нажми на элементы, чтобы запустить фейерверк и сменить тему!
+    </p>
+    <div class="elements-row">
+      <button class="elem-btn elem-pyro" onclick="triggerElement('pyro')" title="Пиро">🔥</button>
+      <button class="elem-btn elem-hydro" onclick="triggerElement('hydro')" title="Гидро">💧</button>
+      <button class="elem-btn elem-electro" onclick="triggerElement('electro')" title="Электро">⚡</button>
+      <button class="elem-btn elem-geo" onclick="triggerElement('geo')" title="Гео">🪨</button>
+      <button class="elem-btn elem-cryo" onclick="triggerElement('cryo')" title="Крио">❄️</button>
+      <button class="elem-btn elem-dendro" onclick="triggerElement('dendro')" title="Дендро">🌿</button>
+      <button class="elem-btn elem-anemo" onclick="triggerElement('anemo')" title="Анемо">🌪️</button>
+      <button class="theme-reset-btn" onclick="resetTheme()" title="Вернуть красную тему">🔄</button>
+    </div>
+    <div class="reaction-hint" id="reactionHint">Выбери стихию для новогоднего фейерверка!</div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🏃 Мини-игра «Паркур до торта»</h2>
+    <div class="game-info">
+      <span>🎯 Доберись до торта!</span>
+      <span>Прыжок: Пробел / ↑ / Тап</span>
+    </div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div class="game-controls">
+      <button class="game-btn" onclick="startGame()">▶️ Заново</button>
+    </div>
+  </section>
+
+  <footer>
+    Сделано с ❤️ для Матвея • 2026 🎄
+  </footer>
+</div>
+
+<canvas id="fireworksCanvas"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>

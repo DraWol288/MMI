@@ -1,0 +1,542 @@
+/* ===== SNOW ===== */
+for (let i = 0; i < 30; i++) {
+  const s = document.createElement('div');
+  s.className = 'snow';
+  s.textContent = ['❄','✦','✧','*'][Math.floor(Math.random()*4)];
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.animationDuration = (6 + Math.random() * 8) + 's';
+  s.style.animationDelay = Math.random() * 5 + 's';
+  s.style.fontSize = (10 + Math.random() * 12) + 'px';
+  document.body.appendChild(s);
+}
+
+/* ===== AUDIO ===== */
+let audioCtx = null;
+
+function playPaimonSound() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    [880, 1320].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.1);
+      gain.gain.setValueAtTime(0.15, now + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.1);
+      osc.stop(now + i * 0.1 + 0.3);
+    });
+  } catch(e) { console.log('Audio error', e); }
+}
+
+/* ===== WISH SYSTEM ===== */
+const wishRewards = [
+  { icon: '🎁', stars: 5, text: 'Желаю тебе крутого лута в жизни!' },
+  { icon: '💎', stars: 5, text: 'Легендарный год без багов!' },
+  { icon: '🍀', stars: 5, text: '5★ Удачи на весь год!' },
+  { icon: '🎇', stars: 4, text: 'Фейерверк эмоций и впечатлений!' },
+  { icon: '🍊', stars: 3, text: 'Мандаринка счастья (съешь её!)' },
+  { icon: '💰', stars: 4, text: 'Примогемы в кошельке!' },
+  { icon: '🎮', stars: 4, text: 'Все игры — без лагов!' },
+  { icon: '🚀', stars: 5, text: 'Прокачка уровня жизни +100!' },
+  { icon: '🧧', stars: 4, text: 'Красный конверт с сюрпризом!' },
+  { icon: '🎄', stars: 3, text: 'Ёлка, которая не падает!' },
+  { icon: '🌟', stars: 5, text: '5★ Здоровья и счастья!' },
+  { icon: '⚡', stars: 4, text: 'Электро-скорость в учёбе!' },
+  { icon: '❄️', stars: 3, text: 'Крио-спокойствие и прохлада!' },
+  { icon: '🔥', stars: 4, text: 'Пиро-энергия на весь год!' },
+  { icon: '🌿', stars: 3, text: 'Дендро-рост и процветание!' }
+];
+
+function doWish() {
+  const screen = document.getElementById('wishScreen');
+  screen.classList.remove('hidden');
+  screen.style.background = '#220008';
+  screen.innerHTML = '<h2 class="wish-title" style="animation:none;">✦ Призываю... ✦</h2>';
+  
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => createMeteor(), i * 150);
+  }
+  
+  setTimeout(() => showResults(), 1800);
+}
+
+function createMeteor() {
+  const m = document.createElement('div');
+  m.className = 'meteor';
+  const startX = Math.random() * window.innerWidth;
+  const startY = -20;
+  m.style.left = startX + 'px';
+  m.style.top = startY + 'px';
+  document.body.appendChild(m);
+  
+  const targetX = window.innerWidth / 2 + (Math.random() - 0.5) * 300;
+  const targetY = window.innerHeight / 2;
+  
+  m.animate([
+    { transform: `translate(0,0) scale(1)`, opacity: 1 },
+    { transform: `translate(${targetX - startX}px, ${targetY - startY}px) scale(2)`, opacity: 0 }
+  ], { duration: 800, easing: 'ease-in' }).onfinish = () => m.remove();
+}
+
+function showResults() {
+  document.getElementById('wishScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.add('active');
+  
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  
+  const chosen = [];
+  for (let i = 0; i < 10; i++) {
+    const pool = wishRewards.filter(r => r.stars === (Math.random() < 0.3 ? 5 : (Math.random() < 0.5 ? 4 : 3)));
+    chosen.push(pool[Math.floor(Math.random() * pool.length)] || wishRewards[0]);
+  }
+  
+  chosen.forEach((reward, i) => {
+    const card = document.createElement('div');
+    card.className = 'card star' + reward.stars;
+    card.style.animationDelay = (i * 0.1) + 's';
+    const stars = '★'.repeat(reward.stars);
+    card.innerHTML = `
+      <div class="card-icon">${reward.icon}</div>
+      <div class="card-stars">${stars}</div>
+      <div class="card-text">${reward.text}</div>
+    `;
+    card.onclick = () => spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#ff0033','#ffcc00','#ff6688']);
+    grid.appendChild(card);
+  });
+}
+
+function goToMain() {
+  document.getElementById('resultsScreen').classList.remove('active');
+  document.getElementById('wishScreen').classList.add('hidden');
+  sessionStorage.setItem('wishDone', '1');
+  playPaimonSound();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function doWishAgain() {
+  document.getElementById('resultsScreen').classList.remove('active');
+  doWish();
+}
+
+function closeResults() { goToMain(); }
+
+function reopenWish() {
+  const screen = document.getElementById('wishScreen');
+  screen.classList.remove('hidden');
+  screen.style.background = '';
+  screen.innerHTML = `
+    <h1 class="wish-title">✦ МОЛИТВА ✦</h1>
+    <p class="wish-subtitle">Привет, Матвей! 🎄<br>Настал момент новогодней молитвы.<br>Испытай удачу — выпадут подарки судьбы!</p>
+    <button class="wish-btn" onclick="doWish()">🌟 Помолиться ×10 🌟</button>
+  `;
+}
+
+/* ===== PAIMON ===== */
+function togglePaimon() {
+  playPaimonSound();
+  document.getElementById('paimonPanel').classList.toggle('open');
+}
+
+function openModal(id) {
+  playPaimonSound();
+  document.getElementById(id).classList.add('open');
+  document.getElementById('paimonPanel').classList.remove('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+/* ===== ОТПРАВКА ФОРМЫ ЧЕРЕЗ FORMSPREE ===== */
+const replyForm = document.getElementById('replyForm');
+const replyBtn = document.getElementById('replyBtn');
+const replySuccess = document.getElementById('replySuccess');
+const replyError = document.getElementById('replyError');
+
+replyForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  // Блокируем кнопку на время отправки
+  replyBtn.disabled = true;
+  replyBtn.textContent = '📤 Отправляем...';
+  replySuccess.classList.remove('show');
+  replyError.classList.remove('show');
+  
+  const formData = new FormData(replyForm);
+  
+  try {
+    const response = await fetch(replyForm.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (response.ok) {
+      // Успех
+      replySuccess.classList.add('show');
+      replyForm.reset();
+      spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff88', '#ffffff', '#ff3366']);
+      setTimeout(() => replySuccess.classList.remove('show'), 5000);
+    } else {
+      // Ошибка сервера
+      replyError.classList.add('show');
+      setTimeout(() => replyError.classList.remove('show'), 5000);
+    }
+  } catch (error) {
+    // Ошибка сети
+    replyError.classList.add('show');
+    setTimeout(() => replyError.classList.remove('show'), 5000);
+  } finally {
+    // Возвращаем кнопку в исходное состояние
+    replyBtn.disabled = false;
+    replyBtn.textContent = '📤 Отправить';
+  }
+});
+
+/* ===== COMMISSIONS ===== */
+const commissions = [
+  { title: 'Съесть мандаринку', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🍊' },
+  { title: 'Выспаться', desc: 'Прогресс: 0/8 часов', progress: 0, max: 8, icon: '😴' },
+  { title: 'Поздравить друга', desc: 'Прогресс: 1/1 — выполнено!', progress: 1, max: 1, icon: '🎉' },
+  { title: 'Посмотреть салют', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🎆' },
+  { title: 'Загадать желание', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '✨' }
+];
+
+let congratsShown = false;
+
+function checkAllCompleted() {
+  const allDone = commissions.every(c => c.progress >= c.max);
+  if (allDone && !congratsShown) {
+    congratsShown = true;
+    setTimeout(() => {
+      document.getElementById('congratsBanner').classList.add('show');
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => spawnFirework(
+          window.innerWidth * (0.15 + Math.random() * 0.7),
+          window.innerHeight * (0.15 + Math.random() * 0.5),
+          ['#ff0033','#ffcc00','#44ff88','#ff66cc','#ffffff']
+        ), i * 250);
+      }
+      playPaimonSound();
+    }, 400);
+  }
+}
+
+function closeCongrats() {
+  document.getElementById('congratsBanner').classList.remove('show');
+}
+
+function renderCommissions() {
+  const list = document.getElementById('commissionsList');
+  list.innerHTML = '';
+  commissions.forEach((c) => {
+    const done = c.progress >= c.max;
+    const div = document.createElement('div');
+    div.className = 'commission' + (done ? ' completed' : '');
+    div.innerHTML = `
+      <div class="comm-check">${done ? '✓' : ''}</div>
+      <div class="comm-info">
+        <strong>${c.icon} ${c.title}</strong>
+        <span>${done ? 'Выполнено!' : c.desc}</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:${(c.progress/c.max)*100}%"></div></div>
+      </div>
+    `;
+    if (!done) {
+      div.onclick = () => {
+        c.progress = Math.min(c.progress + 1, c.max);
+        renderCommissions();
+        spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#44ff00','#ffcc00','#ffffff']);
+        checkAllCompleted();
+      };
+    }
+    list.appendChild(div);
+  });
+}
+renderCommissions();
+
+/* ===== FIREWORKS ===== */
+const fireCanvas = document.getElementById('fireworksCanvas');
+const fireCtx = fireCanvas.getContext('2d');
+let particles = [];
+
+function resizeFire() {
+  fireCanvas.width = window.innerWidth;
+  fireCanvas.height = window.innerHeight;
+}
+resizeFire();
+window.addEventListener('resize', resizeFire);
+
+function spawnFirework(x, y, colors) {
+  for (let i = 0; i < 60; i++) {
+    const angle = (Math.PI * 2 * i) / 60;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: 2 + Math.random() * 3
+    });
+  }
+}
+
+function spawnSpecialFirework(type, x, y) {
+  const configs = {
+    pyro: { colors: ['#ff4400','#ff8800','#ffcc00','#ff2200'], count: 100, speed: 6 },
+    hydro: { colors: ['#0088ff','#00ccff','#44ddff','#0066ff'], count: 80, speed: 5 },
+    electro: { colors: ['#cc00ff','#dd44ff','#ee88ff','#ff00cc'], count: 90, speed: 7 },
+    geo: { colors: ['#ffaa00','#ffcc00','#ffdd44','#cc8800'], count: 70, speed: 5 },
+    cryo: { colors: ['#00ffcc','#44ffdd','#88ffee','#00ddaa'], count: 80, speed: 5.5 },
+    dendro: { colors: ['#44ff00','#66ff44','#88ff66','#22aa00'], count: 85, speed: 5 },
+    anemo: { colors: ['#00ffaa','#44ffcc','#88ffee','#00dd88'], count: 90, speed: 6.5 }
+  };
+  const cfg = configs[type];
+  for (let i = 0; i < cfg.count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * cfg.speed + 1;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
+      size: 2 + Math.random() * 3
+    });
+  }
+}
+
+function animateFire() {
+  fireCtx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.05;
+    p.vx *= 0.98;
+    p.vy *= 0.98;
+    p.life -= 0.012;
+    fireCtx.globalAlpha = p.life;
+    fireCtx.fillStyle = p.color;
+    fireCtx.shadowBlur = 15;
+    fireCtx.shadowColor = p.color;
+    fireCtx.beginPath();
+    fireCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    fireCtx.fill();
+  });
+  fireCtx.globalAlpha = 1;
+  fireCtx.shadowBlur = 0;
+  requestAnimationFrame(animateFire);
+}
+animateFire();
+
+const reactionCombos = {
+  pyro: '🔥 Пиро-реакция: Огненный фейерверк!',
+  hydro: '💧 Гидро-реакция: Волна счастья!',
+  electro: '⚡ Электро-реакция: Искры удачи!',
+  geo: '🪨 Гео-реакция: Кристальный салют!',
+  cryo: '❄️ Крио-реакция: Снежное волшебство!',
+  dendro: '🌿 Дендро-реакция: Цветение года!',
+  anemo: '🌪️ Анемо-реакция: Вихрь перемен!'
+};
+
+function triggerElement(type) {
+  playPaimonSound();
+  document.body.className = 'theme-' + type;
+  spawnSpecialFirework(type, window.innerWidth / 2, window.innerHeight / 2);
+  spawnSpecialFirework(type, window.innerWidth * 0.25, window.innerHeight * 0.4);
+  spawnSpecialFirework(type, window.innerWidth * 0.75, window.innerHeight * 0.5);
+  document.getElementById('reactionHint').textContent = reactionCombos[type];
+  document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector('.elem-' + type);
+  if (btn) btn.classList.add('active');
+}
+
+/* ===== RESET THEME ===== */
+function resetTheme() {
+  playPaimonSound();
+  document.body.className = '';
+  document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('reactionHint').textContent = '🔄 Тема возвращена к красной неоновой!';
+  spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ff0033','#ff3366','#ff6688','#ff8899','#ffffff']);
+  spawnFirework(window.innerWidth * 0.3, window.innerHeight * 0.3, ['#ff0033','#ff6688']);
+  spawnFirework(window.innerWidth * 0.7, window.innerHeight * 0.3, ['#ff3366','#ff8899']);
+  const btn = document.querySelector('.theme-reset-btn');
+  btn.style.transform = 'rotate(360deg) scale(1.3)';
+  setTimeout(() => { btn.style.transform = ''; }, 500);
+}
+
+/* ===== PARCOUR ===== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+let player, platforms, cake, gameState, cameraX, keys;
+
+function initGame() {
+  player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
+  platforms = [
+    { x: 0, y: H - 40, w: 200, h: 40 },
+    { x: 250, y: H - 110, w: 100, h: 20 },
+    { x: 420, y: H - 180, w: 100, h: 20 },
+    { x: 590, y: H - 250, w: 100, h: 20 },
+    { x: 760, y: H - 200, w: 100, h: 20 },
+    { x: 930, y: H - 280, w: 100, h: 20 },
+    { x: 1100, y: H - 220, w: 120, h: 20 },
+    { x: 1300, y: H - 150, w: 150, h: 20 }
+  ];
+  cake = { x: 1420, y: H - 210, w: 40, h: 40 };
+  gameState = 'playing';
+  cameraX = 0;
+  keys = {};
+}
+
+document.addEventListener('keydown', (e) => {
+  if (['Space','ArrowUp','KeyW'].includes(e.code)) {
+    e.preventDefault();
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -11;
+      player.onGround = false;
+    }
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+});
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+});
+
+canvas.addEventListener('click', () => {
+  if (gameState === 'playing' && player.onGround) {
+    player.vy = -11;
+    player.onGround = false;
+  }
+});
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  if (gameState === 'playing' && player.onGround) {
+    player.vy = -11;
+    player.onGround = false;
+  }
+}, { passive: false });
+
+function updateGame() {
+  if (gameState !== 'playing') return;
+  if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
+  else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
+  else player.vx *= 0.8;
+  player.x += player.vx;
+  player.vy += 0.6;
+  player.y += player.vy;
+  player.onGround = false;
+  platforms.forEach(p => {
+    if (player.x + player.w > p.x && player.x < p.x + p.w &&
+        player.vy >= 0 && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + player.vy + 5) {
+      player.y = p.y - player.h;
+      player.vy = 0;
+      player.onGround = true;
+    }
+  });
+  if (player.y + player.h > H) {
+    player.y = H - player.h;
+    player.vy = 0;
+    player.onGround = true;
+  }
+  if (player.y > H + 100) { initGame(); return; }
+  const targetCam = Math.max(0, player.x - W / 3);
+  cameraX += (targetCam - cameraX) * 0.1;
+  if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
+      player.y + player.h > cake.y && player.y < cake.y + cake.h) {
+    gameState = 'won';
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => spawnFirework(
+        window.innerWidth * (0.2 + Math.random() * 0.6),
+        window.innerHeight * (0.2 + Math.random() * 0.4),
+        ['#ff0033','#ffcc00','#44ff00','#00ccff','#ff66cc']
+      ), i * 200);
+    }
+  }
+}
+
+function drawGame() {
+  ctx.fillStyle = '#44001a';
+  ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 50; i++) {
+    const sx = (i * 137 + cameraX * 0.2) % W;
+    const sy = (i * 89) % (H - 100);
+    ctx.fillStyle = `rgba(255, 200, 220, 0.7)`;
+    ctx.fillRect(sx, sy, 2, 2);
+  }
+  ctx.save();
+  ctx.translate(-cameraX, 0);
+  platforms.forEach(p => {
+    const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.h);
+    grad.addColorStop(0, '#ff6688');
+    grad.addColorStop(1, '#cc0033');
+    ctx.fillStyle = grad;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#ff0033';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(p.x, p.y, p.w, 3);
+  });
+  ctx.shadowBlur = 25;
+  ctx.shadowColor = '#ffcc00';
+  ctx.font = '40px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🎂', cake.x + cake.w/2, cake.y + cake.h);
+  ctx.shadowBlur = 0;
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = '#00ffaa';
+  ctx.fillStyle = '#ff3366';
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(player.x + 6, player.y + 8, 6, 6);
+  ctx.fillRect(player.x + 18, player.y + 8, 6, 6);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('🏃 Прыжок: Пробел / ↑ / Тап', 15, 25);
+  if (gameState === 'won') {
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#ffee00';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎂 ПОБЕДА! 🎂', W/2, H/2 - 20);
+    ctx.fillStyle = '#ff8899';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText('С Новым Годом, Матвей!', W/2, H/2 + 30);
+  }
+}
+
+function gameLoop() {
+  updateGame();
+  drawGame();
+  requestAnimationFrame(gameLoop);
+}
+
+function startGame() { initGame(); }
+
+initGame();
+gameLoop();
+
+if (sessionStorage.getItem('wishDone') === '1') {
+  document.getElementById('wishScreen').classList.add('hidden');
+}
