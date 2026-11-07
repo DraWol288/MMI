@@ -164,47 +164,42 @@ const replyBtn = document.getElementById('replyBtn');
 const replySuccess = document.getElementById('replySuccess');
 const replyError = document.getElementById('replyError');
 
-replyForm.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  // Блокируем кнопку на время отправки
-  replyBtn.disabled = true;
-  replyBtn.textContent = '📤 Отправляем...';
-  replySuccess.classList.remove('show');
-  replyError.classList.remove('show');
-  
-  const formData = new FormData(replyForm);
-  
-  try {
-    const response = await fetch(replyForm.action, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
+if (replyForm) {
+  replyForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
     
-    if (response.ok) {
-      // Успех
-      replySuccess.classList.add('show');
-      replyForm.reset();
-      spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff88', '#ffffff', '#ff3366']);
-      setTimeout(() => replySuccess.classList.remove('show'), 5000);
-    } else {
-      // Ошибка сервера
+    replyBtn.disabled = true;
+    replyBtn.textContent = '📤 Отправляем...';
+    replySuccess.classList.remove('show');
+    replyError.classList.remove('show');
+    
+    const formData = new FormData(replyForm);
+    
+    try {
+      const response = await fetch(replyForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+      
+      if (response.ok) {
+        replySuccess.classList.add('show');
+        replyForm.reset();
+        spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff88', '#ffffff', '#ff3366']);
+        setTimeout(() => replySuccess.classList.remove('show'), 5000);
+      } else {
+        replyError.classList.add('show');
+        setTimeout(() => replyError.classList.remove('show'), 5000);
+      }
+    } catch (error) {
       replyError.classList.add('show');
       setTimeout(() => replyError.classList.remove('show'), 5000);
+    } finally {
+      replyBtn.disabled = false;
+      replyBtn.textContent = '📤 Отправить';
     }
-  } catch (error) {
-    // Ошибка сети
-    replyError.classList.add('show');
-    setTimeout(() => replyError.classList.remove('show'), 5000);
-  } finally {
-    // Возвращаем кнопку в исходное состояние
-    replyBtn.disabled = false;
-    replyBtn.textContent = '📤 Отправить';
-  }
-});
+  });
+}
 
 /* ===== COMMISSIONS ===== */
 const commissions = [
@@ -265,7 +260,7 @@ function renderCommissions() {
     list.appendChild(div);
   });
 }
-renderCommissions();
+if (document.getElementById('commissionsList')) renderCommissions();
 
 /* ===== FIREWORKS ===== */
 const fireCanvas = document.getElementById('fireworksCanvas');
@@ -375,14 +370,17 @@ function resetTheme() {
   spawnFirework(window.innerWidth * 0.3, window.innerHeight * 0.3, ['#ff0033','#ff6688']);
   spawnFirework(window.innerWidth * 0.7, window.innerHeight * 0.3, ['#ff3366','#ff8899']);
   const btn = document.querySelector('.theme-reset-btn');
-  btn.style.transform = 'rotate(360deg) scale(1.3)';
-  setTimeout(() => { btn.style.transform = ''; }, 500);
+  if (btn) {
+    btn.style.transform = 'rotate(360deg) scale(1.3)';
+    setTimeout(() => { btn.style.transform = ''; }, 500);
+  }
 }
 
 /* ===== PARCOUR ===== */
 const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const ctx = canvas ? canvas.getContext('2d') : null;
+const W = canvas ? canvas.width : 800;
+const H = canvas ? canvas.height : 400;
 let player, platforms, cake, gameState, cameraX, keys;
 
 function initGame() {
@@ -405,36 +403,38 @@ function initGame() {
 
 document.addEventListener('keydown', (e) => {
   if (['Space','ArrowUp','KeyW'].includes(e.code)) {
+    if (gameState === 'playing' && player && player.onGround) {
+      e.preventDefault();
+      player.vy = -11;
+      player.onGround = false;
+    }
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = true; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = true; }
+});
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = false; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = false; }
+});
+
+if (canvas) {
+  canvas.addEventListener('click', () => {
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -11;
+      player.onGround = false;
+    }
+  });
+  canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (gameState === 'playing' && player.onGround) {
       player.vy = -11;
       player.onGround = false;
     }
-  }
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
-});
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
-});
-
-canvas.addEventListener('click', () => {
-  if (gameState === 'playing' && player.onGround) {
-    player.vy = -11;
-    player.onGround = false;
-  }
-});
-canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  if (gameState === 'playing' && player.onGround) {
-    player.vy = -11;
-    player.onGround = false;
-  }
-}, { passive: false });
+  }, { passive: false });
+}
 
 function updateGame() {
-  if (gameState !== 'playing') return;
+  if (gameState !== 'playing' || !player) return;
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
   else player.vx *= 0.8;
@@ -472,6 +472,7 @@ function updateGame() {
 }
 
 function drawGame() {
+  if (!ctx) return;
   ctx.fillStyle = '#44001a';
   ctx.fillRect(0, 0, W, H);
   for (let i = 0; i < 50; i++) {
@@ -561,11 +562,14 @@ document.querySelectorAll('.mobile-btn').forEach(btn => {
 
 function startGame() { initGame(); }
 
-initGame();
-gameLoop();
+if (canvas) {
+  initGame();
+  gameLoop();
+}
 
 if (sessionStorage.getItem('wishDone') === '1') {
-  document.getElementById('wishScreen').classList.add('hidden');
+  const wishScreen = document.getElementById('wishScreen');
+  if (wishScreen) wishScreen.classList.add('hidden');
 }
 
 /* ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== */
@@ -578,15 +582,13 @@ function openGiftFullscreen(card) {
   const fsImage = document.getElementById('giftFsImage');
   const fsPlaceholder = document.getElementById('giftFsPlaceholder');
   
-  // Если у карточки есть картинка — показываем её
-  if (img && img.src && img.style.display !== 'none') {
+  if (img && img.src && img.style.display !== 'none' && img.complete && img.naturalWidth > 0) {
     fsImage.src = img.src;
     fsImage.style.display = 'block';
     fsPlaceholder.style.display = 'none';
   } else {
-    // Иначе — показываем эмодзи-заглушку
     fsImage.style.display = 'none';
-    fsPlaceholder.textContent = placeholder.textContent;
+    fsPlaceholder.textContent = placeholder.textContent || '🎁';
     fsPlaceholder.style.display = 'block';
   }
   
@@ -595,7 +597,7 @@ function openGiftFullscreen(card) {
   
   const fs = document.getElementById('giftFullscreen');
   fs.classList.add('open');
-  document.body.style.overflow = 'hidden'; // блокируем скролл фона
+  document.body.style.overflow = 'hidden';
   
   playPaimonSound();
   spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ff0033', '#ff6688', '#ffcc00']);
@@ -604,14 +606,13 @@ function openGiftFullscreen(card) {
 function closeGiftFullscreen(event) {
   if (event) event.stopPropagation();
   document.getElementById('giftFullscreen').classList.remove('open');
-  document.body.style.overflow = ''; // возвращаем скролл
+  document.body.style.overflow = '';
 }
 
-// Закрытие по Escape
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const fs = document.getElementById('giftFullscreen');
-    if (fs.classList.contains('open')) {
+    if (fs && fs.classList.contains('open')) {
       closeGiftFullscreen();
     }
   }
