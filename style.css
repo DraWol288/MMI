@@ -1006,17 +1006,17 @@ footer {
   .hero h1 { font-size: 1.8rem; }
   .hero p { font-size: 1.05rem; }
   .hero { gap: 30px; }
-  .hero-character-img { 
+  .mail-character-img { 
   width: 80px; 
   max-width: 25vw;
 }
 
-.hero-layout { 
+.mail-layout { 
   flex-wrap: nowrap;
   gap: 12px;
 }
 
-.hero-letter { 
+.mail-letter { 
   min-width: 0;
   padding: 18px;
   font-size: 0.95rem;
