@@ -64,7 +64,14 @@
     <button class="modal-close" onclick="closeModal('inventoryModal')">✕</button>
     <h3>🎒 Инвентарь</h3>
     <div class="inventory-grid">
-      <div class="gift-card">
+      <!-- 
+        КАК ДОБАВИТЬ СВОЙ ПОДАРОК:
+        1. src="gift1.jpg" — путь к картинке
+        2. <h4>Название</h4> — название подарка
+        3. <p>Описание</p> — описание подарка
+        4. Клик по карточке откроет её на весь экран
+      -->
+      <div class="gift-card" onclick="openGiftFullscreen(this)">
         <div class="gift-image">
           <img src="" alt="Подарок 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
           <div class="gift-placeholder" style="display:none">🎁</div>
@@ -74,7 +81,8 @@
           <p>Здесь будет описание подарка</p>
         </div>
       </div>
-      <div class="gift-card">
+      
+      <div class="gift-card" onclick="openGiftFullscreen(this)">
         <div class="gift-image">
           <img src="" alt="Подарок 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
           <div class="gift-placeholder" style="display:none">🍊</div>
@@ -84,7 +92,8 @@
           <p>Здесь будет описание подарка</p>
         </div>
       </div>
-      <div class="gift-card">
+      
+      <div class="gift-card" onclick="openGiftFullscreen(this)">
         <div class="gift-image">
           <img src="" alt="Подарок 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
           <div class="gift-placeholder" style="display:none">💎</div>
@@ -94,7 +103,8 @@
           <p>Здесь будет описание подарка</p>
         </div>
       </div>
-      <div class="gift-card">
+      
+      <div class="gift-card" onclick="openGiftFullscreen(this)">
         <div class="gift-image">
           <img src="" alt="Подарок 4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
           <div class="gift-placeholder" style="display:none">🎄</div>
@@ -104,6 +114,21 @@
           <p>Здесь будет описание подарка</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== -->
+<div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
+  <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
+  <div class="gift-fs-content" onclick="event.stopPropagation()">
+    <div class="gift-fs-image-wrap">
+      <img id="giftFsImage" src="" alt="Подарок">
+      <div class="gift-fs-placeholder" id="giftFsPlaceholder">🎁</div>
+    </div>
+    <div class="gift-fs-info">
+      <h2 id="giftFsTitle">Название подарка</h2>
+      <p id="giftFsDesc">Описание подарка</p>
     </div>
   </div>
 </div>
