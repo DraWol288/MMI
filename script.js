@@ -540,3 +540,52 @@ gameLoop();
 if (sessionStorage.getItem('wishDone') === '1') {
   document.getElementById('wishScreen').classList.add('hidden');
 }
+
+/* ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== */
+function openGiftFullscreen(card) {
+  const img = card.querySelector('.gift-image img');
+  const placeholder = card.querySelector('.gift-placeholder');
+  const title = card.querySelector('.gift-info h4').textContent;
+  const desc = card.querySelector('.gift-info p').textContent;
+  
+  const fsImage = document.getElementById('giftFsImage');
+  const fsPlaceholder = document.getElementById('giftFsPlaceholder');
+  
+  // Если у карточки есть картинка — показываем её
+  if (img && img.src && img.style.display !== 'none') {
+    fsImage.src = img.src;
+    fsImage.style.display = 'block';
+    fsPlaceholder.style.display = 'none';
+  } else {
+    // Иначе — показываем эмодзи-заглушку
+    fsImage.style.display = 'none';
+    fsPlaceholder.textContent = placeholder.textContent;
+    fsPlaceholder.style.display = 'block';
+  }
+  
+  document.getElementById('giftFsTitle').textContent = title;
+  document.getElementById('giftFsDesc').textContent = desc;
+  
+  const fs = document.getElementById('giftFullscreen');
+  fs.classList.add('open');
+  document.body.style.overflow = 'hidden'; // блокируем скролл фона
+  
+  playPaimonSound();
+  spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ff0033', '#ff6688', '#ffcc00']);
+}
+
+function closeGiftFullscreen(event) {
+  if (event) event.stopPropagation();
+  document.getElementById('giftFullscreen').classList.remove('open');
+  document.body.style.overflow = ''; // возвращаем скролл
+}
+
+// Закрытие по Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const fs = document.getElementById('giftFullscreen');
+    if (fs.classList.contains('open')) {
+      closeGiftFullscreen();
+    }
+  }
+});
