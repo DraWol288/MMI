@@ -247,9 +247,26 @@
       <span>Прыжок: Пробел / ↑ / Тап</span>
     </div>
     <canvas id="gameCanvas" width="800" height="400"></canvas>
-    <div class="game-controls">
-      <button class="game-btn" onclick="startGame()">▶️ Заново</button>
-    </div>
+
+<!-- Мобильные кнопки управления -->
+<div class="mobile-controls">
+  <button class="mobile-btn" id="btnLeft" 
+    onpointerdown="startMove('left')" 
+    onpointerup="stopMove('left')" 
+    onpointerleave="stopMove('left')"
+    onpointercancel="stopMove('left')">◀</button>
+  <button class="mobile-btn mobile-btn-jump" id="btnJump"
+    onpointerdown="mobileJump()">⬆ ПРЫЖОК</button>
+  <button class="mobile-btn" id="btnRight" 
+    onpointerdown="startMove('right')" 
+    onpointerup="stopMove('right')" 
+    onpointerleave="stopMove('right')"
+    onpointercancel="stopMove('right')">▶</button>
+</div>
+
+<div class="game-controls">
+  <button class="game-btn" onclick="startGame()">▶️ Заново</button>
+</div>
   </section>
 
   <footer>
