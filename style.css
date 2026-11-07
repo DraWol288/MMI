@@ -1006,7 +1006,21 @@ footer {
   .hero h1 { font-size: 1.8rem; }
   .hero p { font-size: 1.05rem; }
   .hero { gap: 30px; }
-  .hero-character-img { width: 220px; }
+  .hero-character-img { 
+  width: 80px; 
+  max-width: 25vw;
+}
+
+.hero-layout { 
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.hero-letter { 
+  min-width: 0;
+  padding: 18px;
+  font-size: 0.95rem;
+}
   .section { padding: 40px 15px; }
   .section-title { font-size: 1.5rem; }
   .elem-btn { width: 55px; height: 55px; font-size: 1.5rem; }
