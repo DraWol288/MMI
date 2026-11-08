@@ -51,88 +51,20 @@ const wishRewards = [
   { icon: '🌿', stars: 3, text: 'Дендро-рост и процветание!' }
 ];
 
+let lastWishCount = 10;
+
 function doWish(count = 10) {
+  lastWishCount = count;
   const screen = document.getElementById('wishScreen');
   screen.classList.remove('hidden');
   screen.style.background = '#220008';
   screen.innerHTML = `<h2 class="wish-title" style="animation:none;">✦ Призываю ${count}... ✦</h2>`;
   
-  // Количество метеоров зависит от выбора
   for (let i = 0; i < count; i++) {
     setTimeout(() => createMeteor(), i * (count === 10 ? 150 : 300));
   }
   
   setTimeout(() => showResults(count), count === 10 ? 1800 : 1000);
-}
-
-// ... (createMeteor без изменений) ...
-
-function showResults(count = 10) {
-  document.getElementById('wishScreen').classList.add('hidden');
-  document.getElementById('resultsScreen').classList.add('active');
-  
-  const grid = document.getElementById('cardsGrid');
-  grid.innerHTML = '';
-  
-  // Если 1 карточка — ставим класс, чтобы она была по центру и крупнее
-  if (count === 1) {
-    grid.style.gridTemplateColumns = '1fr';
-    grid.style.maxWidth = '400px';
-  } else {
-    grid.style.gridTemplateColumns = ''; // сбрасываем на дефолт
-    grid.style.maxWidth = '';
-  }
-  
-  const chosen = [];
-  for (let i = 0; i < count; i++) {
-    const pool = wishRewards.filter(r => r.stars === (Math.random() < 0.3 ? 5 : (Math.random() < 0.5 ? 4 : 3)));
-    chosen.push(pool[Math.floor(Math.random() * pool.length)] || wishRewards[0]);
-  }
-  
-  chosen.forEach((reward, i) => {
-    const card = document.createElement('div');
-    card.className = 'card star' + reward.stars;
-    card.style.animationDelay = (i * 0.1) + 's';
-    const stars = '★'.repeat(reward.stars);
-    card.innerHTML = `
-      <div class="card-icon">${reward.icon}</div>
-      <div class="card-stars">${stars}</div>
-      <div class="card-text">${reward.text}</div>
-    `;
-    card.onclick = () => spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#ff0033','#ffcc00','#ff6688']);
-    grid.appendChild(card);
-  });
-}
-
-// ... (goToMain, doWishAgain без изменений) ...
-
-// Обновляем doWishAgain, чтобы он запоминал, сколько крутили
-let lastWishCount = 10;
-
-function doWishAgain() {
-  document.getElementById('resultsScreen').classList.remove('active');
-  doWish(lastWishCount);
-}
-
-function reopenWish() {
-  const screen = document.getElementById('wishScreen');
-  screen.classList.remove('hidden');
-  screen.style.background = '';
-  screen.innerHTML = `
-    <h1 class="wish-title">✦ МОЛИТВА ✦</h1>
-    <p class="wish-subtitle">Привет, Матвей! 🎄<br>Настал момент новогодней молитвы.<br>Испытай удачу — выпадут подарки судьбы!</p>
-    <div class="wish-actions">
-      <button class="wish-btn wish-btn-1" onclick="doWish(1)">🌟 Помолиться ×1 🌟</button>
-      <button class="wish-btn wish-btn-10" onclick="doWish(10)">💎 Помолиться ×10 💎</button>
-    </div>
-  `;
-}
-
-// Сохраняем выбор для doWishAgain
-const originalDoWish = doWish;
-doWish = function(count) {
-  lastWishCount = count;
-  originalDoWish(count);
 }
 
 function createMeteor() {
@@ -160,12 +92,11 @@ function showResults(count = 10) {
   const grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
   
-  // Если 1 карточка — ставим класс, чтобы она была по центру и крупнее
   if (count === 1) {
     grid.style.gridTemplateColumns = '1fr';
     grid.style.maxWidth = '400px';
   } else {
-    grid.style.gridTemplateColumns = ''; // сбрасываем на дефолт
+    grid.style.gridTemplateColumns = ''; 
     grid.style.maxWidth = '';
   }
   
@@ -198,13 +129,12 @@ function goToMain() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Обновляем doWishAgain, чтобы он запоминал, сколько крутили
-let lastWishCount = 10;
-
 function doWishAgain() {
   document.getElementById('resultsScreen').classList.remove('active');
   doWish(lastWishCount);
 }
+
+function closeResults() { goToMain(); }
 
 function reopenWish() {
   const screen = document.getElementById('wishScreen');
@@ -220,12 +150,6 @@ function reopenWish() {
   `;
 }
 
-// Сохраняем выбор для doWishAgain
-const originalDoWish = doWish;
-doWish = function(count) {
-  lastWishCount = count;
-  originalDoWish(count);
-}
 /* ===== PAIMON ===== */
 function togglePaimon() {
   playPaimonSound();
@@ -257,7 +181,6 @@ const replyError = document.getElementById('replyError');
 if (replyForm) {
   replyForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    
     replyBtn.disabled = true;
     replyBtn.textContent = '📤 Отправляем...';
     replySuccess.classList.remove('show');
@@ -326,6 +249,7 @@ function closeCongrats() {
 
 function renderCommissions() {
   const list = document.getElementById('commissionsList');
+  if (!list) return;
   list.innerHTML = '';
   commissions.forEach((c) => {
     const done = c.progress >= c.max;
@@ -350,14 +274,15 @@ function renderCommissions() {
     list.appendChild(div);
   });
 }
-if (document.getElementById('commissionsList')) renderCommissions();
+renderCommissions();
 
 /* ===== FIREWORKS ===== */
 const fireCanvas = document.getElementById('fireworksCanvas');
-const fireCtx = fireCanvas.getContext('2d');
+const fireCtx = fireCanvas ? fireCanvas.getContext('2d') : null;
 let particles = [];
 
 function resizeFire() {
+  if (!fireCanvas) return;
   fireCanvas.width = window.innerWidth;
   fireCanvas.height = window.innerHeight;
 }
@@ -390,6 +315,7 @@ function spawnSpecialFirework(type, x, y) {
     anemo: { colors: ['#00ffaa','#44ffcc','#88ffee','#00dd88'], count: 90, speed: 6.5 }
   };
   const cfg = configs[type];
+  if (!cfg) return;
   for (let i = 0; i < cfg.count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * cfg.speed + 1;
@@ -405,6 +331,7 @@ function spawnSpecialFirework(type, x, y) {
 }
 
 function animateFire() {
+  if (!fireCtx) return;
   fireCtx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
   particles = particles.filter(p => p.life > 0);
   particles.forEach(p => {
@@ -444,7 +371,8 @@ function triggerElement(type) {
   spawnSpecialFirework(type, window.innerWidth / 2, window.innerHeight / 2);
   spawnSpecialFirework(type, window.innerWidth * 0.25, window.innerHeight * 0.4);
   spawnSpecialFirework(type, window.innerWidth * 0.75, window.innerHeight * 0.5);
-  document.getElementById('reactionHint').textContent = reactionCombos[type];
+  const hint = document.getElementById('reactionHint');
+  if (hint) hint.textContent = reactionCombos[type];
   document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector('.elem-' + type);
   if (btn) btn.classList.add('active');
@@ -455,7 +383,8 @@ function resetTheme() {
   playPaimonSound();
   document.body.className = '';
   document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('reactionHint').textContent = '🔄 Тема возвращена к красной неоновой!';
+  const hint = document.getElementById('reactionHint');
+  if (hint) hint.textContent = '🔄 Тема возвращена к красной неоновой!';
   spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ff0033','#ff3366','#ff6688','#ff8899','#ffffff']);
   spawnFirework(window.innerWidth * 0.3, window.innerHeight * 0.3, ['#ff0033','#ff6688']);
   spawnFirework(window.innerWidth * 0.7, window.innerHeight * 0.3, ['#ff3366','#ff8899']);
@@ -545,8 +474,9 @@ function updateGame() {
     player.vy = 0;
     player.onGround = true;
   }
+  
+  // ===== ПАДЕНИЕ В ПРОПАСТЬ =====
   if (player.y > H + 100) {
-    // Показать сообщение о падении
     const hint = document.getElementById('gameHint');
     if (hint) {
       hint.textContent = '💀 Упал! Начинаем заново...';
@@ -556,13 +486,12 @@ function updateGame() {
         hint.style.color = '#ffddee';
       }, 2000);
     }
-    
-    // Вибро-отклик (если телефон)
     if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
     
     initGame();
     return;
-}
+  }
+
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
