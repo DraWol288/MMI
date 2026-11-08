@@ -51,17 +51,88 @@ const wishRewards = [
   { icon: '🌿', stars: 3, text: 'Дендро-рост и процветание!' }
 ];
 
-function doWish() {
+function doWish(count = 10) {
   const screen = document.getElementById('wishScreen');
   screen.classList.remove('hidden');
   screen.style.background = '#220008';
-  screen.innerHTML = '<h2 class="wish-title" style="animation:none;">✦ Призываю... ✦</h2>';
+  screen.innerHTML = `<h2 class="wish-title" style="animation:none;">✦ Призываю ${count}... ✦</h2>`;
   
-  for (let i = 0; i < 10; i++) {
-    setTimeout(() => createMeteor(), i * 150);
+  // Количество метеоров зависит от выбора
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => createMeteor(), i * (count === 10 ? 150 : 300));
   }
   
-  setTimeout(() => showResults(), 1800);
+  setTimeout(() => showResults(count), count === 10 ? 1800 : 1000);
+}
+
+// ... (createMeteor без изменений) ...
+
+function showResults(count = 10) {
+  document.getElementById('wishScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.add('active');
+  
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  
+  // Если 1 карточка — ставим класс, чтобы она была по центру и крупнее
+  if (count === 1) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.style.maxWidth = '400px';
+  } else {
+    grid.style.gridTemplateColumns = ''; // сбрасываем на дефолт
+    grid.style.maxWidth = '';
+  }
+  
+  const chosen = [];
+  for (let i = 0; i < count; i++) {
+    const pool = wishRewards.filter(r => r.stars === (Math.random() < 0.3 ? 5 : (Math.random() < 0.5 ? 4 : 3)));
+    chosen.push(pool[Math.floor(Math.random() * pool.length)] || wishRewards[0]);
+  }
+  
+  chosen.forEach((reward, i) => {
+    const card = document.createElement('div');
+    card.className = 'card star' + reward.stars;
+    card.style.animationDelay = (i * 0.1) + 's';
+    const stars = '★'.repeat(reward.stars);
+    card.innerHTML = `
+      <div class="card-icon">${reward.icon}</div>
+      <div class="card-stars">${stars}</div>
+      <div class="card-text">${reward.text}</div>
+    `;
+    card.onclick = () => spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#ff0033','#ffcc00','#ff6688']);
+    grid.appendChild(card);
+  });
+}
+
+// ... (goToMain, doWishAgain без изменений) ...
+
+// Обновляем doWishAgain, чтобы он запоминал, сколько крутили
+let lastWishCount = 10;
+
+function doWishAgain() {
+  document.getElementById('resultsScreen').classList.remove('active');
+  doWish(lastWishCount);
+}
+
+function reopenWish() {
+  const screen = document.getElementById('wishScreen');
+  screen.classList.remove('hidden');
+  screen.style.background = '';
+  screen.innerHTML = `
+    <h1 class="wish-title">✦ МОЛИТВА ✦</h1>
+    <p class="wish-subtitle">Привет, Матвей! 🎄<br>Настал момент новогодней молитвы.<br>Испытай удачу — выпадут подарки судьбы!</p>
+    <div class="wish-actions">
+      <button class="wish-btn wish-btn-1" onclick="doWish(1)">🌟 Помолиться ×1 🌟</button>
+      <button class="wish-btn wish-btn-10" onclick="doWish(10)">💎 Помолиться ×10 💎</button>
+    </div>
+  `;
+}
+
+// Сохраняем выбор для doWishAgain
+const originalDoWish = doWish;
+doWish = function(count) {
+  lastWishCount = count;
+  originalDoWish(count);
 }
 
 function createMeteor() {
@@ -82,15 +153,24 @@ function createMeteor() {
   ], { duration: 800, easing: 'ease-in' }).onfinish = () => m.remove();
 }
 
-function showResults() {
+function showResults(count = 10) {
   document.getElementById('wishScreen').classList.add('hidden');
   document.getElementById('resultsScreen').classList.add('active');
   
   const grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
   
+  // Если 1 карточка — ставим класс, чтобы она была по центру и крупнее
+  if (count === 1) {
+    grid.style.gridTemplateColumns = '1fr';
+    grid.style.maxWidth = '400px';
+  } else {
+    grid.style.gridTemplateColumns = ''; // сбрасываем на дефолт
+    grid.style.maxWidth = '';
+  }
+  
   const chosen = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < count; i++) {
     const pool = wishRewards.filter(r => r.stars === (Math.random() < 0.3 ? 5 : (Math.random() < 0.5 ? 4 : 3)));
     chosen.push(pool[Math.floor(Math.random() * pool.length)] || wishRewards[0]);
   }
@@ -118,12 +198,13 @@ function goToMain() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Обновляем doWishAgain, чтобы он запоминал, сколько крутили
+let lastWishCount = 10;
+
 function doWishAgain() {
   document.getElementById('resultsScreen').classList.remove('active');
-  doWish();
+  doWish(lastWishCount);
 }
-
-function closeResults() { goToMain(); }
 
 function reopenWish() {
   const screen = document.getElementById('wishScreen');
@@ -132,10 +213,19 @@ function reopenWish() {
   screen.innerHTML = `
     <h1 class="wish-title">✦ МОЛИТВА ✦</h1>
     <p class="wish-subtitle">Привет, Матвей! 🎄<br>Настал момент новогодней молитвы.<br>Испытай удачу — выпадут подарки судьбы!</p>
-    <button class="wish-btn" onclick="doWish()">🌟 Помолиться ×10 🌟</button>
+    <div class="wish-actions">
+      <button class="wish-btn wish-btn-1" onclick="doWish(1)">🌟 Помолиться ×1 🌟</button>
+      <button class="wish-btn wish-btn-10" onclick="doWish(10)">💎 Помолиться ×10 💎</button>
+    </div>
   `;
 }
 
+// Сохраняем выбор для doWishAgain
+const originalDoWish = doWish;
+doWish = function(count) {
+  lastWishCount = count;
+  originalDoWish(count);
+}
 /* ===== PAIMON ===== */
 function togglePaimon() {
   playPaimonSound();
@@ -455,7 +545,24 @@ function updateGame() {
     player.vy = 0;
     player.onGround = true;
   }
-  if (player.y > H + 100) { initGame(); return; }
+  if (player.y > H + 100) {
+    // Показать сообщение о падении
+    const hint = document.getElementById('gameHint');
+    if (hint) {
+      hint.textContent = '💀 Упал! Начинаем заново...';
+      hint.style.color = '#ff4444';
+      setTimeout(() => {
+        hint.textContent = '🎯 Доберись до торта!';
+        hint.style.color = '#ffddee';
+      }, 2000);
+    }
+    
+    // Вибро-отклик (если телефон)
+    if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+    
+    initGame();
+    return;
+}
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
