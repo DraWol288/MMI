@@ -405,7 +405,8 @@ let player, platforms, cake, gameState, cameraX, keys;
 function initGame() {
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
   platforms = [
-    { x: 0, y: H - 40, w: 200, h: 40 },
+    // Этот невидимый пол нужен, чтобы кубик мог оттолкнуться и прыгнуть на первую платформу
+    { x: 0, y: H - 40, w: 200, h: 40 }, 
     { x: 250, y: H - 110, w: 100, h: 20 },
     { x: 420, y: H - 180, w: 100, h: 20 },
     { x: 590, y: H - 250, w: 100, h: 20 },
@@ -454,13 +455,20 @@ if (canvas) {
 
 function updateGame() {
   if (gameState !== 'playing' || !player) return;
+  
+  // Движение по горизонтали
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
   else player.vx *= 0.8;
+  
   player.x += player.vx;
+  
+  // Гравитация
   player.vy += 0.6;
   player.y += player.vy;
   player.onGround = false;
+  
+  // Столкновение с платформами
   platforms.forEach(p => {
     if (player.x + player.w > p.x && player.x < p.x + p.w &&
         player.vy >= 0 && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + player.vy + 5) {
@@ -469,14 +477,10 @@ function updateGame() {
       player.onGround = true;
     }
   });
-  if (player.y + player.h > H) {
-    player.y = H - player.h;
-    player.vy = 0;
-    player.onGround = true;
-  }
   
-  // ===== ПАДЕНИЕ В ПРОПАСТЬ =====
-  if (player.y > H + 100) {
+  // ===== УПАЛ В ПРОПАСТЬ =====
+  // Если игрок опустился ниже нижней границы экрана (H) — перезапускаем
+  if (player.y > H) {
     const hint = document.getElementById('gameHint');
     if (hint) {
       hint.textContent = '💀 Упал! Начинаем заново...';
@@ -492,8 +496,11 @@ function updateGame() {
     return;
   }
 
+  // Движение камеры
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
+  
+  // Победа (добрался до торта)
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     gameState = 'won';
