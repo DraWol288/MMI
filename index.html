@@ -54,13 +54,22 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal('tasksModal')">✕</button>
     <h3>📋 Задания на Новый Год</h3>
-    <div class="task-item">✅ Съесть 1 мандаринку (минимум!)</div>
-    <div class="task-item">✅ Поздравить всех друзей с Новым Годом</div>
-    <div class="task-item">✅ Загадать желание под бой курантов</div>
-    <div class="task-item">✅ Посмотреть салют</div>
-    <div class="task-item">✅ Выспаться 8+ часов</div>
-    <div class="task-item">✅ Найти крутой лут в жизни</div>
-    <div class="task-item done">✅ Быть легендарным (уже выполнено!)</div>
+    
+    <!-- Прогресс-бар заданий -->
+    <div class="task-progress-wrap">
+      <div class="task-progress-info">
+        <span>Выполнено:</span>
+        <span id="taskProgressText">0 / 7</span>
+      </div>
+      <div class="task-progress-bar">
+        <div class="task-progress-fill" id="taskProgressFill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Список интерактивных заданий -->
+    <div id="paimonTasksList" class="paimon-tasks-list">
+      <!-- JS сгенерирует их здесь -->
+    </div>
   </div>
 </div>
 
