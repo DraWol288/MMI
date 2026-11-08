@@ -214,39 +214,6 @@ if (replyForm) {
   });
 }
 
-/* ===== COMMISSIONS ===== */
-const commissions = [
-  { title: 'Съесть мандаринку', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🍊' },
-  { title: 'Выспаться', desc: 'Прогресс: 0/8 часов', progress: 0, max: 8, icon: '😴' },
-  { title: 'Поздравить друга', desc: 'Прогресс: 1/1 — выполнено!', progress: 1, max: 1, icon: '🎉' },
-  { title: 'Посмотреть салют', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🎆' },
-  { title: 'Загадать желание', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '✨' }
-];
-
-let congratsShown = false;
-
-function checkAllCompleted() {
-  const allDone = commissions.every(c => c.progress >= c.max);
-  if (allDone && !congratsShown) {
-    congratsShown = true;
-    setTimeout(() => {
-      document.getElementById('congratsBanner').classList.add('show');
-      for (let i = 0; i < 8; i++) {
-        setTimeout(() => spawnFirework(
-          window.innerWidth * (0.15 + Math.random() * 0.7),
-          window.innerHeight * (0.15 + Math.random() * 0.5),
-          ['#ff0033','#ffcc00','#44ff88','#ff66cc','#ffffff']
-        ), i * 250);
-      }
-      playPaimonSound();
-    }, 400);
-  }
-}
-
-function closeCongrats() {
-  document.getElementById('congratsBanner').classList.remove('show');
-}
-
 /* ===== COMMISSIONS (ГЛАВНАЯ + ПАЙМОН) ===== */
 const commissions = [
   { title: 'Съесть мандаринку', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🍊' },
@@ -265,7 +232,8 @@ function checkAllCompleted() {
   if (allDone && !congratsShown) {
     congratsShown = true;
     setTimeout(() => {
-      document.getElementById('congratsBanner').classList.add('show');
+      const banner = document.getElementById('congratsBanner');
+      if (banner) banner.classList.add('show');
       for (let i = 0; i < 8; i++) {
         setTimeout(() => spawnFirework(
           window.innerWidth * (0.15 + Math.random() * 0.7),
@@ -279,12 +247,12 @@ function checkAllCompleted() {
 }
 
 function closeCongrats() {
-  document.getElementById('congratsBanner').classList.remove('show');
+  const banner = document.getElementById('congratsBanner');
+  if (banner) banner.classList.remove('show');
 }
 
-// Функция перерисовки заданий (и на главной, и в Паймоне)
 function renderCommissions() {
-  // --- 1. Рендер на главной странице ---
+  // 1. Рендер на главной
   const list = document.getElementById('commissionsList');
   if (list) {
     list.innerHTML = '';
@@ -312,7 +280,7 @@ function renderCommissions() {
     });
   }
 
-  // --- 2. Рендер в меню Паймон ---
+  // 2. Рендер в меню Паймон
   const paimonList = document.getElementById('paimonTasksList');
   if (paimonList) {
     paimonList.innerHTML = '';
@@ -332,12 +300,11 @@ function renderCommissions() {
         </div>
       `;
 
-      // Клик по заданию в Паймоне
       if (!done) {
         div.onclick = () => {
           c.progress = Math.min(c.progress + 1, c.max);
           playPaimonSound();
-          renderCommissions(); // обновит и главную, и Паймон
+          renderCommissions();
           spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#44ff00','#ffcc00','#ffffff']);
           checkAllCompleted();
         };
@@ -345,7 +312,6 @@ function renderCommissions() {
       paimonList.appendChild(div);
     });
 
-    // Обновляем прогресс-бар
     const total = commissions.length;
     const percent = Math.round((doneCount / total) * 100);
     
@@ -356,9 +322,6 @@ function renderCommissions() {
     if (fillEl) fillEl.style.width = percent + '%';
   }
 }
-
-// Запускаем рендер при загрузке
-renderCommissions();
 
 /* ===== FIREWORKS ===== */
 const fireCanvas = document.getElementById('fireworksCanvas');
@@ -462,7 +425,6 @@ function triggerElement(type) {
   if (btn) btn.classList.add('active');
 }
 
-/* ===== RESET THEME ===== */
 function resetTheme() {
   playPaimonSound();
   document.body.className = '';
@@ -489,8 +451,7 @@ let player, platforms, cake, gameState, cameraX, keys;
 function initGame() {
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
   platforms = [
-    // Этот невидимый пол нужен, чтобы кубик мог оттолкнуться и прыгнуть на первую платформу
-    { x: 0, y: H - 40, w: 200, h: 40 }, 
+    { x: 0, y: H - 40, w: 200, h: 40 },
     { x: 250, y: H - 110, w: 100, h: 20 },
     { x: 420, y: H - 180, w: 100, h: 20 },
     { x: 590, y: H - 250, w: 100, h: 20 },
@@ -540,19 +501,15 @@ if (canvas) {
 function updateGame() {
   if (gameState !== 'playing' || !player) return;
   
-  // Движение по горизонтали
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
   else player.vx *= 0.8;
   
   player.x += player.vx;
-  
-  // Гравитация
   player.vy += 0.6;
   player.y += player.vy;
   player.onGround = false;
   
-  // Столкновение с платформами
   platforms.forEach(p => {
     if (player.x + player.w > p.x && player.x < p.x + p.w &&
         player.vy >= 0 && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + player.vy + 5) {
@@ -562,8 +519,7 @@ function updateGame() {
     }
   });
   
-  // ===== УПАЛ В ПРОПАСТЬ =====
-  // Если игрок опустился ниже нижней границы экрана (H) — перезапускаем
+  // Падение за границу
   if (player.y > H) {
     const hint = document.getElementById('gameHint');
     if (hint) {
@@ -580,11 +536,9 @@ function updateGame() {
     return;
   }
 
-  // Движение камеры
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
-  // Победа (добрался до торта)
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     gameState = 'won';
@@ -744,3 +698,6 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+/* ===== ЗАПУСК ===== */
+renderCommissions();
