@@ -247,33 +247,117 @@ function closeCongrats() {
   document.getElementById('congratsBanner').classList.remove('show');
 }
 
-function renderCommissions() {
-  const list = document.getElementById('commissionsList');
-  if (!list) return;
-  list.innerHTML = '';
-  commissions.forEach((c) => {
-    const done = c.progress >= c.max;
-    const div = document.createElement('div');
-    div.className = 'commission' + (done ? ' completed' : '');
-    div.innerHTML = `
-      <div class="comm-check">${done ? '✓' : ''}</div>
-      <div class="comm-info">
-        <strong>${c.icon} ${c.title}</strong>
-        <span>${done ? 'Выполнено!' : c.desc}</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:${(c.progress/c.max)*100}%"></div></div>
-      </div>
-    `;
-    if (!done) {
-      div.onclick = () => {
-        c.progress = Math.min(c.progress + 1, c.max);
-        renderCommissions();
-        spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#44ff00','#ffcc00','#ffffff']);
-        checkAllCompleted();
-      };
-    }
-    list.appendChild(div);
-  });
+/* ===== COMMISSIONS (ГЛАВНАЯ + ПАЙМОН) ===== */
+const commissions = [
+  { title: 'Съесть мандаринку', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🍊' },
+  { title: 'Выспаться', desc: 'Прогресс: 0/8 часов', progress: 0, max: 8, icon: '😴' },
+  { title: 'Поздравить друга', desc: 'Прогресс: 1/1 — выполнено!', progress: 1, max: 1, icon: '🎉' },
+  { title: 'Посмотреть салют', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '🎆' },
+  { title: 'Загадать желание', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '✨' },
+  { title: 'Найти крутой лут в жизни', desc: 'Прогресс: 0/1', progress: 0, max: 1, icon: '💎' },
+  { title: 'Быть легендарным', desc: 'Прогресс: 1/1 — выполнено!', progress: 1, max: 1, icon: '🏆' }
+];
+
+let congratsShown = false;
+
+function checkAllCompleted() {
+  const allDone = commissions.every(c => c.progress >= c.max);
+  if (allDone && !congratsShown) {
+    congratsShown = true;
+    setTimeout(() => {
+      document.getElementById('congratsBanner').classList.add('show');
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => spawnFirework(
+          window.innerWidth * (0.15 + Math.random() * 0.7),
+          window.innerHeight * (0.15 + Math.random() * 0.5),
+          ['#ff0033','#ffcc00','#44ff88','#ff66cc','#ffffff']
+        ), i * 250);
+      }
+      playPaimonSound();
+    }, 400);
+  }
 }
+
+function closeCongrats() {
+  document.getElementById('congratsBanner').classList.remove('show');
+}
+
+// Функция перерисовки заданий (и на главной, и в Паймоне)
+function renderCommissions() {
+  // --- 1. Рендер на главной странице ---
+  const list = document.getElementById('commissionsList');
+  if (list) {
+    list.innerHTML = '';
+    commissions.forEach((c) => {
+      const done = c.progress >= c.max;
+      const div = document.createElement('div');
+      div.className = 'commission' + (done ? ' completed' : '');
+      div.innerHTML = `
+        <div class="comm-check">${done ? '✓' : ''}</div>
+        <div class="comm-info">
+          <strong>${c.icon} ${c.title}</strong>
+          <span>${done ? 'Выполнено!' : c.desc}</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:${(c.progress/c.max)*100}%"></div></div>
+        </div>
+      `;
+      if (!done) {
+        div.onclick = () => {
+          c.progress = Math.min(c.progress + 1, c.max);
+          renderCommissions();
+          spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#44ff00','#ffcc00','#ffffff']);
+          checkAllCompleted();
+        };
+      }
+      list.appendChild(div);
+    });
+  }
+
+  // --- 2. Рендер в меню Паймон ---
+  const paimonList = document.getElementById('paimonTasksList');
+  if (paimonList) {
+    paimonList.innerHTML = '';
+    let doneCount = 0;
+
+    commissions.forEach((c) => {
+      const done = c.progress >= c.max;
+      if (done) doneCount++;
+
+      const div = document.createElement('div');
+      div.className = 'paimon-task' + (done ? ' done' : '');
+      div.innerHTML = `
+        <div class="paimon-task-checkbox">✓</div>
+        <div class="paimon-task-content">
+          <strong>${c.icon} ${c.title}</strong>
+          <span>${done ? 'Задание выполнено!' : c.desc}</span>
+        </div>
+      `;
+
+      // Клик по заданию в Паймоне
+      if (!done) {
+        div.onclick = () => {
+          c.progress = Math.min(c.progress + 1, c.max);
+          playPaimonSound();
+          renderCommissions(); // обновит и главную, и Паймон
+          spawnFirework(window.innerWidth/2, window.innerHeight/2, ['#44ff00','#ffcc00','#ffffff']);
+          checkAllCompleted();
+        };
+      }
+      paimonList.appendChild(div);
+    });
+
+    // Обновляем прогресс-бар
+    const total = commissions.length;
+    const percent = Math.round((doneCount / total) * 100);
+    
+    const textEl = document.getElementById('taskProgressText');
+    if (textEl) textEl.textContent = `${doneCount} / ${total}`;
+    
+    const fillEl = document.getElementById('taskProgressFill');
+    if (fillEl) fillEl.style.width = percent + '%';
+  }
+}
+
+// Запускаем рендер при загрузке
 renderCommissions();
 
 /* ===== FIREWORKS ===== */
