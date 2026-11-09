@@ -42,13 +42,12 @@
 <div class="paimon-menu">
   <div class="paimon-avatar" onclick="togglePaimon()" title="Меню Паймон">🧚</div>
   <div class="paimon-panel" id="paimonPanel">
-  <h4>Меню Паймон</h4>
-  <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
-  <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
-  <!-- НОВАЯ КНОПКА -->
-  <div class="paimon-item" onclick="openModal('charactersModal')">👥 Персонажи</div>
-  <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
-</div>
+    <h4>Меню Паймон</h4>
+    <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
+    <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
+    <div class="paimon-item" onclick="openModal('charactersModal')">👥 Персонажи</div>
+    <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
+  </div>
 </div>
 
 <!-- ===== MODALS ===== -->
@@ -80,13 +79,6 @@
     <button class="modal-close" onclick="closeModal('inventoryModal')">✕</button>
     <h3>🎒 Инвентарь</h3>
     <div class="inventory-grid">
-      <!-- 
-        КАК ДОБАВИТЬ СВОЙ ПОДАРОК:
-        1. src="gift1.jpg" — путь к картинке
-        2. <h4>Название</h4> — название подарка
-        3. <p>Описание</p> — описание подарка
-        4. Клик по карточке откроет её на весь экран
-      -->
       <div class="gift-card" onclick="openGiftFullscreen(this)">
         <div class="gift-image">
           <img src="" alt="Подарок 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -134,7 +126,7 @@
   </div>
 </div>
 
-  <!-- ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== -->
+<!-- ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== -->
 <div class="modal-overlay" id="charactersModal">
   <div class="modal" style="max-width: 900px;">
     <button class="modal-close" onclick="closeModal('charactersModal')">✕</button>
@@ -151,9 +143,9 @@
         </div>
         <div class="char-name">Никита</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Оружие', 'Двуручный меч Скалы', 'Увеличивает защиту на 40%. При попадании создаёт кристалл, который взрывается через 3 секунды.')">⚔️ Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Артефакты', 'Стойкость Миллелита', '2 предмета: +20% HP. 4 предмета: При попадании увеличивает силу щита на 30%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Навыки', 'Землетрясение', 'Наносит Гео урон по площади и создаёт каменную стену, блокирующую атаки.')">🪨 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Оружие', 'Двуручный меч Скалы', 'Увеличивает защиту на 40%. При попадании создаёт кристалл, который взрывается через 3 секунды.', 'geo')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Артефакты', 'Стойкость Миллелита', '2 предмета: +20% HP. 4 предмета: При попадании увеличивает силу щита на 30%.', 'geo')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Навыки', 'Землетрясение', 'Наносит Гео урон по площади и создаёт каменную стену, блокирующую атаки.', 'geo')">🪨 Навыки</button>
         </div>
       </div>
 
@@ -167,9 +159,9 @@
         </div>
         <div class="char-name">Альберт</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Оружие', 'Лук Небесного Ветра', 'Увеличивает урон от смены персонажа на 40%. Собирает врагов в кучу.')">🏹 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Артефакты', 'Скиталец Пустыни', '2 предмета: +15% Анемо урона. 4 предмета: Увеличивает скорость передвижения на 20%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Навыки', 'Вихрь перемен', 'Создаёт мощный торнадо, подбрасывающий врагов в воздух.')">🌪️ Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Оружие', 'Лук Небесного Ветра', 'Увеличивает урон от смены персонажа на 40%. Собирает врагов в кучу.', 'anemo')">🏹 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Артефакты', 'Скиталец Пустыни', '2 предмета: +15% Анемо урона. 4 предмета: Увеличивает скорость передвижения на 20%.', 'anemo')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Навыки', 'Вихрь перемен', 'Создаёт мощный торнадо, подбрасывающий врагов в воздух.', 'anemo')">🌪️ Навыки</button>
         </div>
       </div>
 
@@ -183,9 +175,9 @@
         </div>
         <div class="char-name">Саша</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Оружие', 'Катализатор Цветения', 'Увеличивает мастерство стихий на 200. Ускоряет реакции Бутонизация.')">📖 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Артефакты', 'Воспоминания леса', '2 предмета: +80 мастерства. 4 предмета: Урон реакций увеличен на 40%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Навыки', 'Цветение жизни', 'Создаёт поле, которое лечит союзников и наносит Дендро урон врагам.')">🌿 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Оружие', 'Катализатор Цветения', 'Увеличивает мастерство стихий на 200. Ускоряет реакции Бутонизация.', 'dendro')">📖 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Артефакты', 'Воспоминания леса', '2 предмета: +80 мастерства. 4 предмета: Урон реакций увеличен на 40%.', 'dendro')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Навыки', 'Цветение жизни', 'Создаёт поле, которое лечит союзников и наносит Дендро урон врагам.', 'dendro')">🌿 Навыки</button>
         </div>
       </div>
 
@@ -199,9 +191,9 @@
         </div>
         <div class="char-name">Дима</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Оружие', 'Клеймор Пламени', 'Наносит 100% Пиро урона по области при попадании. Сжигает врагов.')">⚔️ Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Артефакты', 'Багровая ведьма', '2 предмета: +15% Пиро урона. 4 предмета: Увеличивает урон Горения на 40%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Навыки', 'Метеорит', 'Призывает падающую звезду, наносящую огромный Пиро урон.')">🔥 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Оружие', 'Клеймор Пламени', 'Наносит 100% Пиро урона по области при попадании. Сжигает врагов.', 'pyro')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Артефакты', 'Багровая ведьма', '2 предмета: +15% Пиро урона. 4 предмета: Увеличивает урон Горения на 40%.', 'pyro')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Навыки', 'Метеорит', 'Призывает падающую звезду, наносящую огромный Пиро урон.', 'pyro')">🔥 Навыки</button>
         </div>
       </div>
 
@@ -213,11 +205,11 @@
         <div class="char-photo" onclick="openCharFullscreen('Ульяна', 'Крио', 'cryo', 'uliana.png', 'Ледяная королева. Твой холодный разум всегда помогает найти решение.')">
           <img src="uliana.png" alt="Ульяна" onerror="this.parentElement.innerText='👤'">
         </div>
-        <div class="char-name">Ульяна</div>
+        <div class="char-name">Ты</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Оружие', 'Меч Вечной Зимы', 'Шанс крит. попадания увеличен на 24%. Замораживает врагов.')">⚔️ Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Артефакты', 'Зимний вихрь', '2 предмета: +15% Крио урона. 4 предмета: При заморозке восстанавливает энергию.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Навыки', 'Ледяной шторм', 'Создаёт метель, которая наносит постоянный Крио урон и замораживает.')">❄️ Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Оружие', 'Меч Вечной Зимы', 'Шанс крит. попадания увеличен на 24%. Замораживает врагов.', 'cryo')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Артефакты', 'Зимний вихрь', '2 предмета: +15% Крио урона. 4 предмета: При заморозке восстанавливает энергию.', 'cryo')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Ульяна', 'Навыки', 'Ледяной шторм', 'Создаёт метель, которая наносит постоянный Крио урон и замораживает.', 'cryo')">❄️ Навыки</button>
         </div>
       </div>
 
@@ -231,9 +223,9 @@
         </div>
         <div class="char-name">Матвей</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Оружие', 'Лук Водопада', 'Увеличивает урон по слабым местам на 36%. Создаёт дождь при выстреле.')">🏹 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Артефакты', 'Сердце глубин', '2 предмета: +15% Гидро урона. 4 предмета: Нормальные атаки наносят доп. урон.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Навыки', 'Водоворот', 'Создаёт сферу, которая притягивает врагов и наносит Гидро урон.')">🌊 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Оружие', 'Лук Водопада', 'Увеличивает урон по слабым местам на 36%. Создаёт дождь при выстреле.', 'hydro')">🏹 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Артефакты', 'Сердце глубин', '2 предмета: +15% Гидро урона. 4 предмета: Нормальные атаки наносят доп. урон.', 'hydro')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Навыки', 'Водоворот', 'Создаёт сферу, которая притягивает врагов и наносит Гидро урон.', 'hydro')">🌊 Навыки</button>
         </div>
       </div>
 
@@ -247,9 +239,9 @@
         </div>
         <div class="char-name">Стас</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Оружие', 'Копьё Лианы', 'Атаки накладывают эффект «Рост». Каждый 3-й удар выпускает шипы.')">🔱 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Артефакты', 'Золотая труппа', '2 предмета: +20 мастерства стихий. 4 предмета: Увеличивает урон реакций на 25%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Навыки', 'Лесные оковы', 'Призывает корни, которые удерживают врагов и наносят периодический урон.')">🌿 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Оружие', 'Копьё Лианы', 'Атаки накладывают эффект «Рост». Каждый 3-й удар выпускает шипы.', 'dendro')">🔱 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Артефакты', 'Золотая труппа', '2 предмета: +20 мастерства стихий. 4 предмета: Увеличивает урон реакций на 25%.', 'dendro')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Навыки', 'Лесные оковы', 'Призывает корни, которые удерживают врагов и наносят периодический урон.', 'dendro')">🌿 Навыки</button>
         </div>
       </div>
 
@@ -263,9 +255,9 @@
         </div>
         <div class="char-name">Вася</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Оружие', 'Молот Титанов', 'Тяжёлые атаки наносят урон по площади и имеют шанс оглушить противника.')">🔨 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Артефакты', 'Архаичный камень', '2 предмета: +15% Гео урона. 4 предмета: Увеличивает урон щита на 35%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Навыки', 'Каменный панцирь', 'Покрывает себя и союзников бронёй, которая блокирует урон и взрывается при разрушении.')">🪨 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Оружие', 'Молот Титанов', 'Тяжёлые атаки наносят урон по площади и имеют шанс оглушить противника.', 'geo')">🔨 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Артефакты', 'Архаичный камень', '2 предмета: +15% Гео урона. 4 предмета: Увеличивает урон щита на 35%.', 'geo')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Навыки', 'Каменный панцирь', 'Покрывает себя и союзников бронёй, которая блокирует урон и взрывается при разрушении.', 'geo')">🪨 Навыки</button>
         </div>
       </div>
 
@@ -279,17 +271,32 @@
         </div>
         <div class="char-name">Паша</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Оружие', 'Катана Грозы', 'При крите восстанавливает 5 единиц энергии. Имеет шанс оглушить.')">⚔️ Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Артефакты', 'Громогласный рёв', '2 предмета: +15% Электро урона. 4 предмета: Увеличивает урон реакций на 40%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Навыки', 'Громовой удар', 'Мгновенно перемещается к врагу и наносит огромный Электро урон.')">⚡ Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Оружие', 'Катана Грозы', 'При крите восстанавливает 5 единиц энергии. Имеет шанс оглушить.', 'electro')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Артефакты', 'Громогласный рёв', '2 предмета: +15% Электро урона. 4 предмета: Увеличивает урон реакций на 40%.', 'electro')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Паша', 'Навыки', 'Громовой удар', 'Мгновенно перемещается к врагу и наносит огромный Электро урон.', 'electro')">⚡ Навыки</button>
         </div>
       </div>
 
-      </div> <!-- ЗАКРЫВАЕМ characters-grid -->
-  </div> <!-- ЗАКРЫВАЕМ сам блок modal (окно галереи) -->
-</div> <!-- ЗАКРЫВАЕМ modal-overlay (фон галереи) -->
+    </div> <!-- ЗАКРЫВАЕМ characters-grid -->
+  </div> <!-- ЗАКРЫВАЕМ сам блок modal -->
+</div> <!-- ЗАКРЫВАЕМ modal-overlay -->
 
-  <!-- ===== ИНФО ОРУЖИЯ/АРТЕФАКТОВ/НАВЫКОВ ===== -->
+<!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА / ПЕРСОНАЖА ===== -->
+<div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
+  <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
+  <div class="gift-fs-content" onclick="event.stopPropagation()">
+    <div class="gift-fs-image-wrap">
+      <img id="giftFsImage" src="" alt="Подарок">
+      <div class="gift-fs-placeholder" id="giftFsPlaceholder">🎁</div>
+    </div>
+    <div class="gift-fs-info">
+      <h2 id="giftFsTitle">Название</h2>
+      <p id="giftFsDesc">Описание</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ИНФО ОРУЖИЯ/АРТЕФАКТОВ/НАВЫКОВ ===== -->
 <div class="gift-fullscreen" id="charInfoFullscreen" onclick="closeCharInfo(event)">
   <button class="gift-fs-close" onclick="closeCharInfo(event)">✕</button>
   <div class="gift-fs-content" onclick="event.stopPropagation()">
@@ -303,28 +310,12 @@
     </div>
   </div>
 </div>
-  
-<!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== -->
-<div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
-  <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
-  <div class="gift-fs-content" onclick="event.stopPropagation()">
-    <div class="gift-fs-image-wrap">
-      <img id="giftFsImage" src="" alt="Подарок">
-      <div class="gift-fs-placeholder" id="giftFsPlaceholder">🎁</div>
-    </div>
-    <div class="gift-fs-info">
-      <h2 id="giftFsTitle">Название подарка</h2>
-      <p id="giftFsDesc">Описание подарка</p>
-    </div>
-  </div>
-</div>
 
 <div class="modal-overlay" id="mailModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('mailModal')">✕</button>
     <h3>✉️ Личное послание</h3>
     <div class="mail-layout">
-      <!-- ВСТАВЬ СЮДА ПУТЬ К КАРТИНКЕ МАТВЕЯ (например: matvey.png) -->
       <img class="mail-character-img" src="matvey2.png" alt="Матвей" onerror="this.style.display='none'">
       
       <div class="mail-letter">
@@ -347,7 +338,6 @@
       </div>
     </div>
     
-    <!-- ===== ФОРМА ОТВЕТА С FORMSPREE ===== -->
     <div class="reply-form">
       <h4>💌 Ответить на письмо</h4>
       <form id="replyForm" action="https://formspree.io/f/mgaabnvv" method="POST">
@@ -368,7 +358,6 @@
 <!-- ===== MAIN SITE ===== -->
 <div class="container">
   <section class="hero">
-    <!-- ВСТАВЬ СЮДА ПУТЬ К КАРТИНКЕ МАТВЕЯ (например: matvey.png) -->
     <img class="hero-character-img" src="matvey.png" alt="Матвей" onerror="this.style.display='none'">
     
     <div class="hero-text">
@@ -400,59 +389,59 @@
       Нажми на элементы, чтобы запустить фейерверк и сменить тему!
     </p>
     <div class="elements-row">
-  <button class="elem-btn elem-pyro" onclick="triggerElement('pyro')" title="Пиро">
-    <img src="Pyro.webp" alt="Пиро">
-  </button>
-  <button class="elem-btn elem-hydro" onclick="triggerElement('hydro')" title="Гидро">
-    <img src="Hydro.webp" alt="Гидро">
-  </button>
-  <button class="elem-btn elem-electro" onclick="triggerElement('electro')" title="Электро">
-    <img src="electro.webp" alt="Электро">
-  </button>
-  <button class="elem-btn elem-geo" onclick="triggerElement('geo')" title="Гео">
-    <img src="Geo.webp" alt="Гео">
-  </button>
-  <button class="elem-btn elem-cryo" onclick="triggerElement('cryo')" title="Крио">
-    <img src="Cryo.webp" alt="Крио">
-  </button>
-  <button class="elem-btn elem-dendro" onclick="triggerElement('dendro')" title="Дендро">
-    <img src="dendro.png" alt="Дендро">
-  </button>
-  <button class="elem-btn elem-anemo" onclick="triggerElement('anemo')" title="Анемо">
-    <img src="anemo.png" alt="Анемо">
-  </button>
-  <button class="theme-reset-btn" onclick="resetTheme()" title="Вернуть красную тему">🔄</button>
-</div>
+      <button class="elem-btn elem-pyro" onclick="triggerElement('pyro')" title="Пиро">
+        <img src="Pyro.webp" alt="Пиро">
+      </button>
+      <button class="elem-btn elem-hydro" onclick="triggerElement('hydro')" title="Гидро">
+        <img src="Hydro.webp" alt="Гидро">
+      </button>
+      <button class="elem-btn elem-electro" onclick="triggerElement('electro')" title="Электро">
+        <img src="electro.webp" alt="Электро">
+      </button>
+      <button class="elem-btn elem-geo" onclick="triggerElement('geo')" title="Гео">
+        <img src="Geo.webp" alt="Гео">
+      </button>
+      <button class="elem-btn elem-cryo" onclick="triggerElement('cryo')" title="Крио">
+        <img src="Cryo.webp" alt="Крио">
+      </button>
+      <button class="elem-btn elem-dendro" onclick="triggerElement('dendro')" title="Дендро">
+        <img src="dendro.png" alt="Дендро">
+      </button>
+      <button class="elem-btn elem-anemo" onclick="triggerElement('anemo')" title="Анемо">
+        <img src="anemo.png" alt="Анемо">
+      </button>
+      <button class="theme-reset-btn" onclick="resetTheme()" title="Вернуть красную тему">🔄</button>
+    </div>
     <div class="reaction-hint" id="reactionHint">Выбери стихию для новогоднего фейерверка!</div>
   </section>
 
   <section class="section">
     <h2 class="section-title">🏃 Мини-игра «Паркур до торта»</h2>
     <div class="game-info">
-  <span id="gameHint">🎯 Доберись до торта!</span>
-  <span>Прыжок: Пробел / ↑ / Тап</span>
-</div>
+      <span id="gameHint">🎯 Доберись до торта!</span>
+      <span>Прыжок: Пробел / ↑ / Тап</span>
+    </div>
     <canvas id="gameCanvas" width="800" height="400"></canvas>
 
-<!-- Мобильные кнопки управления -->
-<div class="mobile-controls">
-  <button class="mobile-btn" id="btnLeft" 
-    onpointerdown="startMove('left')" 
-    onpointerup="stopMove('left')" 
-    onpointerleave="stopMove('left')"
-    onpointercancel="stopMove('left')">◀</button>
-  <button class="mobile-btn mobile-btn-jump" id="btnJump"
-    onpointerdown="mobileJump()">⬆ ПРЫЖОК</button>
-  <button class="mobile-btn" id="btnRight" 
-    onpointerdown="startMove('right')" 
-    onpointerup="stopMove('right')" 
-    onpointerleave="stopMove('right')"
-    onpointercancel="stopMove('right')">▶</button>
-</div>
+    <!-- Мобильные кнопки управления -->
+    <div class="mobile-controls">
+      <button class="mobile-btn" id="btnLeft" 
+        onpointerdown="startMove('left')" 
+        onpointerup="stopMove('left')" 
+        onpointerleave="stopMove('left')"
+        onpointercancel="stopMove('left')">◀</button>
+      <button class="mobile-btn mobile-btn-jump" id="btnJump"
+        onpointerdown="mobileJump()">⬆ ПРЫЖОК</button>
+      <button class="mobile-btn" id="btnRight" 
+        onpointerdown="startMove('right')" 
+        onpointerup="stopMove('right')" 
+        onpointerleave="stopMove('right')"
+        onpointercancel="stopMove('right')">▶</button>
+    </div>
 
-<div class="game-controls">
-  <button class="game-btn" onclick="startGame()">▶️ Заново</button>
-</div>
+    <div class="game-controls">
+      <button class="game-btn" onclick="startGame()">▶️ Заново</button>
+    </div>
   </section>
 
   <footer>
