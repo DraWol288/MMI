@@ -288,6 +288,21 @@
       </div> <!-- ЗАКРЫВАЕМ characters-grid -->
   </div> <!-- ЗАКРЫВАЕМ сам блок modal (окно галереи) -->
 </div> <!-- ЗАКРЫВАЕМ modal-overlay (фон галереи) -->
+
+  <!-- ===== ИНФО ОРУЖИЯ/АРТЕФАКТОВ/НАВЫКОВ ===== -->
+<div class="gift-fullscreen" id="charInfoFullscreen" onclick="closeCharInfo(event)">
+  <button class="gift-fs-close" onclick="closeCharInfo(event)">✕</button>
+  <div class="gift-fs-content" onclick="event.stopPropagation()">
+    <div class="gift-fs-info" style="padding-top: 40px; text-align: center;">
+      <h3 id="charInfoTitle" style="color:#ffcc00; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Персонаж</h3>
+      <h2 id="charInfoSubtitle" style="font-size: 2.5rem; margin-bottom: 20px;">Оружие</h2>
+      <div style="background: rgba(255,0,51,0.15); border: 2px solid #ff6688; border-radius: 15px; padding: 25px; text-align: left;">
+        <h4 id="charInfoItemName" style="color:#fff; font-size: 1.3rem; margin-bottom: 10px;">Название</h4>
+        <p id="charInfoItemDesc" style="color:#ffddee; font-size: 1.1rem; line-height: 1.6;">Описание</p>
+      </div>
+    </div>
+  </div>
+</div>
   
 <!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== -->
 <div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
