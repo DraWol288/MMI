@@ -139,63 +139,145 @@
   <div class="modal" style="max-width: 900px;">
     <button class="modal-close" onclick="closeModal('charactersModal')">✕</button>
     <h3>👥 Галерея персонажей</h3>
-    <div class="characters-grid">
+     <div class="characters-grid">
       
-      <!-- ПЕРСОНАЖ 1 (Пример: Пиро) -->
+      <!-- 1. НИКИТА (ГЕО) -->
+      <div class="char-card elem-geo-bg">
+        <div class="char-element-badge elem-geo">
+          <img src="Geo.webp" alt="Гео" onerror="this.style.display='none'; this.parentElement.innerText='🪨'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Никита', 'Гео', 'geo', 'nikita.png', 'Несокрушимая скала. Его щит защитит от любых проблем.')">
+          <!-- ВСТАВЬ ФОТО НИКИТЫ ТУТ -->
+          <img src="nikita.png" alt="Никита" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Никита</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Оружие', 'Двуручный меч Скалы', 'Увеличивает защиту на 40%. При попадании создаёт кристалл, который взрывается через 3 секунды.')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Артефакты', 'Стойкость Миллелита', '2 предмета: +20% HP. 4 предмета: При попадании увеличивает силу щита на 30%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Никита', 'Навыки', 'Землетрясение', 'Наносит Гео урон по площади и создаёт каменную стену, блокирующую атаки.')">🪨 Навыки</button>
+        </div>
+      </div>
+
+      <!-- 2. АЛЬБЕРТ (АНЕМО) -->
+      <div class="char-card elem-anemo-bg">
+        <div class="char-element-badge elem-anemo">
+          <img src="anemo.png" alt="Анемо" onerror="this.style.display='none'; this.parentElement.innerText='🌪️'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Альберт', 'Анемо', 'anemo', 'albert.png', 'Свободный как ветер. Всегда найдёт выход из любой ситуации.')">
+          <!-- ВСТАВЬ ФОТО АЛЬБЕРТА ТУТ -->
+          <img src="albert.png" alt="Альберт" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Альберт</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Оружие', 'Лук Небесного Ветра', 'Увеличивает урон от смены персонажа на 40%. Собирает врагов в кучу.')">🏹 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Артефакты', 'Скиталец Пустыни', '2 предмета: +15% Анемо урона. 4 предмета: Увеличивает скорость передвижения на 20%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Альберт', 'Навыки', 'Вихрь перемен', 'Создаёт мощный торнадо, подбрасывающий врагов в воздух.')">🌪️ Навыки</button>
+        </div>
+      </div>
+
+      <!-- 3. САША (ДЕНДРО) -->
+      <div class="char-card elem-dendro-bg">
+        <div class="char-element-badge elem-dendro">
+          <img src="dendro.png" alt="Дендро" onerror="this.style.display='none'; this.parentElement.innerText='🌿'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Саша', 'Дендро', 'dendro', 'sasha.png', 'Мудрость природы. Исцеляет раны и дарит жизнь всему вокруг.')">
+          <!-- ВСТАВЬ ФОТО САШИ ТУТ -->
+          <img src="sasha.png" alt="Саша" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Саша</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Оружие', 'Катализатор Цветения', 'Увеличивает мастерство стихий на 200. Ускоряет реакции Бутонизация.')">📖 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Артефакты', 'Воспоминания леса', '2 предмета: +80 мастерства. 4 предмета: Урон реакций увеличен на 40%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Саша', 'Навыки', 'Цветение жизни', 'Создаёт поле, которое лечит союзников и наносит Дендро урон врагам.')">🌿 Навыки</button>
+        </div>
+      </div>
+
+      <!-- 4. ДИМА (ПИРО) -->
       <div class="char-card elem-pyro-bg">
         <div class="char-element-badge elem-pyro">
           <img src="Pyro.webp" alt="Пиро" onerror="this.style.display='none'; this.parentElement.innerText='🔥'">
         </div>
-        <div class="char-photo" onclick="openCharFullscreen('Матвей', 'Пиро', 'pyro', 'matvey.png', 'Легендарный герой, покоряющий сердца.')">
-          <img src="matvey.png" alt="Матвей" onerror="this.parentElement.innerText='👤'">
+        <div class="char-photo" onclick="openCharFullscreen('Дима', 'Пиро', 'pyro', 'dima.png', 'Пылающее сердце. Сжигает всё на своём пути ради победы.')">
+          <!-- ВСТАВЬ ФОТО ДИМЫ ТУТ -->
+          <img src="dima.png" alt="Дима" onerror="this.parentElement.innerText='👤'">
         </div>
-        <div class="char-name">Матвей</div>
+        <div class="char-name">Дима</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Оружие', 'Меч Дракона (5★)', 'Увеличивает силу атаки на 48%. При попадании имеет 50% шанс нанести доп. урон огнём.')">⚔️ Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Артефакты', 'Полыхающая багровая ведьма (4★)', '2 предмета: +15% Пиро урона. 4 предмета: Увеличивает урон реакции Горение на 40%.')">💎 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Навыки', 'Огненный взрыв (Q)', 'Наносит 300% урона по площади Пиро. Создаёт щит, поглощающий урон в размере 20% от макс. HP.')">🔥 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Оружие', 'Клеймор Пламени', 'Наносит 100% Пиро урона по области при попадании. Сжигает врагов.')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Артефакты', 'Багровая ведьма', '2 предмета: +15% Пиро урона. 4 предмета: Увеличивает урон Горения на 40%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Дима', 'Навыки', 'Метеорит', 'Призывает падающую звезду, наносящую огромный Пиро урон.')">🔥 Навыки</button>
         </div>
       </div>
 
-      <!-- ПЕРСОНАЖ 2 (Пример: Гидро) -->
+      <!-- 5. ТЫ (КРИО) -->
+      <div class="char-card elem-cryo-bg">
+        <div class="char-element-badge elem-cryo">
+          <img src="Cryo.webp" alt="Крио" onerror="this.style.display='none'; this.parentElement.innerText='❄️'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Ты', 'Крио', 'cryo', 'you.png', 'Ледяная королева. Твой холодный разум всегда помогает найти решение.')">
+          <!-- ВСТАВЬ СВОЁ ФОТО ТУТ (если захочешь) -->
+          <img src="you.png" alt="Ты" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Ты</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Ты', 'Оружие', 'Меч Вечной Зимы', 'Шанс крит. попадания увеличен на 24%. Замораживает врагов.')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Ты', 'Артефакты', 'Зимний вихрь', '2 предмета: +15% Крио урона. 4 предмета: При заморозке восстанавливает энергию.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Ты', 'Навыки', 'Ледяной шторм', 'Создаёт метель, которая наносит постоянный Крио урон и замораживает.')">❄️ Навыки</button>
+        </div>
+      </div>
+
+      <!-- 6. МАТВЕЙ (ГИДРО) -->
       <div class="char-card elem-hydro-bg">
         <div class="char-element-badge elem-hydro">
           <img src="Hydro.webp" alt="Гидро" onerror="this.style.display='none'; this.parentElement.innerText='💧'">
         </div>
-        <div class="char-photo" onclick="openCharFullscreen('Матвей (Альт)', 'Гидро', 'hydro', 'matvey2.png', 'Мастер водных иллюзий.')">
-          <img src="matvey2.png" alt="Матвей Альт" onerror="this.parentElement.innerText='👤'">
+        <div class="char-photo" onclick="openCharFullscreen('Матвей', 'Гидро', 'hydro', 'matvey.png', 'Мастер водных иллюзий. Легендарный герой, покоряющий сердца.')">
+          <!-- ФОТО МАТВЕЯ (уже должно быть) -->
+          <img src="matvey.png" alt="Матвей" onerror="this.parentElement.innerText='👤'">
         </div>
-        <div class="char-name">Матвей (Альт)</div>
+        <div class="char-name">Матвей</div>
         <div class="char-action-btns">
-          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Оружие', 'Лук Водопада (4★)', 'Увеличивает урон по слабым местам на 36%.')">🏹 Оружие</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Артефакты', 'Сердце глубин (4★)', '2 предмета: +15% Гидро урона. 4 предмета: Нормальные атаки наносят доп. урон.')">💧 Артефакты</button>
-          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Навыки', 'Водоворот (E)', 'Создаёт сферу, которая притягивает врагов и наносит Гидро урон.')">🌊 Навыки</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Оружие', 'Лук Водопада', 'Увеличивает урон по слабым местам на 36%. Создаёт дождь при выстреле.')">🏹 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Артефакты', 'Сердце глубин', '2 предмета: +15% Гидро урона. 4 предмета: Нормальные атаки наносят доп. урон.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Навыки', 'Водоворот', 'Создаёт сферу, которая притягивает врагов и наносит Гидро урон.')">🌊 Навыки</button>
         </div>
       </div>
 
-      <!-- Чтобы добавить нового персонажа, скопируй блок <div class="char-card...">...</div> выше и поменяй: 
-           класс elem-pyro-bg (или hydro, electro, geo, cryo, dendro, anemo)
-           картинки (src="...")
-           имя, тексты и id в функциях openCharFullscreen и openCharInfo -->
-
-    </div>
-  </div>
-</div>
-
-<!-- ===== ИНФО ОРУЖИЯ/АРТЕФАКТОВ/НАВЫКОВ ===== -->
-<div class="gift-fullscreen" id="charInfoFullscreen" onclick="closeCharInfo(event)">
-  <button class="gift-fs-close" onclick="closeCharInfo(event)">✕</button>
-  <div class="gift-fs-content" onclick="event.stopPropagation()">
-    <div class="gift-fs-info" style="padding-top: 40px; text-align: center;">
-      <h3 id="charInfoTitle" style="color:#ffcc00; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Персонаж</h3>
-      <h2 id="charInfoSubtitle" style="font-size: 2.5rem; margin-bottom: 20px;">Оружие</h2>
-      <div style="background: rgba(255,0,51,0.15); border: 2px solid #ff6688; border-radius: 15px; padding: 25px; text-align: left;">
-        <h4 id="charInfoItemName" style="color:#fff; font-size: 1.3rem; margin-bottom: 10px;">Название</h4>
-        <p id="charInfoItemDesc" style="color:#ffddee; font-size: 1.1rem; line-height: 1.6;">Описание</p>
+      <!-- 7. СТАС (ДЕНДРО) -->
+      <div class="char-card elem-dendro-bg">
+        <div class="char-element-badge elem-dendro">
+          <img src="dendro.png" alt="Дендро" onerror="this.style.display='none'; this.parentElement.innerText='🌿'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Стас', 'Дендро', 'dendro', 'stas.png', 'Хранитель леса. Его знания о природе безграничны.')">
+          <!-- ВСТАВЬ ФОТО СТАСА ТУТ -->
+          <img src="stas.png" alt="Стас" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Стас</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Оружие', 'Копьё Лианы', 'Атаки накладывают эффект «Рост». Каждый 3-й удар выпускает шипы.')">🔱 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Артефакты', 'Золотая труппа', '2 предмета: +20 мастерства стихий. 4 предмета: Увеличивает урон реакций на 25%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Стас', 'Навыки', 'Лесные оковы', 'Призывает корни, которые удерживают врагов и наносят периодический урон.')">🌿 Навыки</button>
+        </div>
       </div>
+
+      <!-- 8. ВАСЯ (ЭЛЕКТРО) -->
+      <div class="char-card elem-electro-bg">
+        <div class="char-element-badge elem-electro">
+          <img src="electro.webp" alt="Электро" onerror="this.style.display='none'; this.parentElement.innerText='⚡'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Вася', 'Электро', 'electro', 'vasya.png', 'Скорость молнии. Его атаки невозможно отследить.')">
+          <!-- ВСТАВЬ ФОТО ВАСИ ТУТ -->
+          <img src="vasya.png" alt="Вася" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Вася</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Оружие', 'Катана Грозы', 'При крите восстанавливает 5 единиц энергии. Имеет шанс оглушить.')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Артефакты', 'Громогласный рёв', '2 предмета: +15% Электро урона. 4 предмета: Увеличивает урон реакций на 40%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Вася', 'Навыки', 'Громовой удар', 'Мгновенно перемещается к врагу и наносит огромный Электро урон.')">⚡ Навыки</button>
+        </div>
+      </div>
+
     </div>
-  </div>
-</div>
 <!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== -->
 <div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
   <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
