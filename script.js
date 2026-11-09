@@ -706,8 +706,12 @@ renderCommissions();
 // Открытие фото персонажа на весь экран
 function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
   const fs = document.getElementById('giftFullscreen');
+  const fsContent = fs.querySelector('.gift-fs-content');
   const fsImage = document.getElementById('giftFsImage');
   const fsPlaceholder = document.getElementById('giftFsPlaceholder');
+  
+  // Сбрасываем старые классы и ставим новый цвет
+  fsContent.className = 'gift-fs-content char-theme-' + elementClass;
   
   if (imgSrc && imgSrc !== 'undefined') {
     fsImage.src = imgSrc;
@@ -730,13 +734,18 @@ function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
 }
 
 // Открытие информации об оружии/артефактах/навыках
-function openCharInfo(charName, category, itemName, itemDesc) {
+function openCharInfo(charName, category, itemName, itemDesc, elementClass) {
   document.getElementById('charInfoTitle').textContent = charName;
   document.getElementById('charInfoSubtitle').textContent = category;
   document.getElementById('charInfoItemName').textContent = itemName;
   document.getElementById('charInfoItemDesc').textContent = itemDesc;
   
   const fs = document.getElementById('charInfoFullscreen');
+  const fsContent = fs.querySelector('.gift-fs-content');
+  
+  // Сбрасываем старые классы и ставим новый цвет
+  fsContent.className = 'gift-fs-content char-theme-' + elementClass;
+  
   fs.classList.add('open');
   document.body.style.overflow = 'hidden';
   
