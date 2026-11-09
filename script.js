@@ -729,12 +729,6 @@ function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
   spawnSpecialFirework(elementClass, window.innerWidth / 2, window.innerHeight / 2);
 }
 
-function closeGiftFullscreen(event) {
-  if (event) event.stopPropagation();
-  document.getElementById('giftFullscreen').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
 // Открытие информации об оружии/артефактах/навыках
 function openCharInfo(charName, category, itemName, itemDesc) {
   document.getElementById('charInfoTitle').textContent = charName;
