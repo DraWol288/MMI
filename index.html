@@ -42,11 +42,13 @@
 <div class="paimon-menu">
   <div class="paimon-avatar" onclick="togglePaimon()" title="Меню Паймон">🧚</div>
   <div class="paimon-panel" id="paimonPanel">
-    <h4>Меню Паймон</h4>
-    <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
-    <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
-    <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
-  </div>
+  <h4>Меню Паймон</h4>
+  <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
+  <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
+  <!-- НОВАЯ КНОПКА -->
+  <div class="paimon-item" onclick="openModal('charactersModal')">👥 Персонажи</div>
+  <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
+</div>
 </div>
 
 <!-- ===== MODALS ===== -->
@@ -132,6 +134,68 @@
   </div>
 </div>
 
+  <!-- ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== -->
+<div class="modal-overlay" id="charactersModal">
+  <div class="modal" style="max-width: 900px;">
+    <button class="modal-close" onclick="closeModal('charactersModal')">✕</button>
+    <h3>👥 Галерея персонажей</h3>
+    <div class="characters-grid">
+      
+      <!-- ПЕРСОНАЖ 1 (Пример: Пиро) -->
+      <div class="char-card elem-pyro-bg">
+        <div class="char-element-badge elem-pyro">
+          <img src="Pyro.webp" alt="Пиро" onerror="this.style.display='none'; this.parentElement.innerText='🔥'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Матвей', 'Пиро', 'pyro', 'matvey.png', 'Легендарный герой, покоряющий сердца.')">
+          <img src="matvey.png" alt="Матвей" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Матвей</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Оружие', 'Меч Дракона (5★)', 'Увеличивает силу атаки на 48%. При попадании имеет 50% шанс нанести доп. урон огнём.')">⚔️ Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Артефакты', 'Полыхающая багровая ведьма (4★)', '2 предмета: +15% Пиро урона. 4 предмета: Увеличивает урон реакции Горение на 40%.')">💎 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей', 'Навыки', 'Огненный взрыв (Q)', 'Наносит 300% урона по площади Пиро. Создаёт щит, поглощающий урон в размере 20% от макс. HP.')">🔥 Навыки</button>
+        </div>
+      </div>
+
+      <!-- ПЕРСОНАЖ 2 (Пример: Гидро) -->
+      <div class="char-card elem-hydro-bg">
+        <div class="char-element-badge elem-hydro">
+          <img src="Hydro.webp" alt="Гидро" onerror="this.style.display='none'; this.parentElement.innerText='💧'">
+        </div>
+        <div class="char-photo" onclick="openCharFullscreen('Матвей (Альт)', 'Гидро', 'hydro', 'matvey2.png', 'Мастер водных иллюзий.')">
+          <img src="matvey2.png" alt="Матвей Альт" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="char-name">Матвей (Альт)</div>
+        <div class="char-action-btns">
+          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Оружие', 'Лук Водопада (4★)', 'Увеличивает урон по слабым местам на 36%.')">🏹 Оружие</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Артефакты', 'Сердце глубин (4★)', '2 предмета: +15% Гидро урона. 4 предмета: Нормальные атаки наносят доп. урон.')">💧 Артефакты</button>
+          <button class="char-act-btn" onclick="openCharInfo('Матвей (Альт)', 'Навыки', 'Водоворот (E)', 'Создаёт сферу, которая притягивает врагов и наносит Гидро урон.')">🌊 Навыки</button>
+        </div>
+      </div>
+
+      <!-- Чтобы добавить нового персонажа, скопируй блок <div class="char-card...">...</div> выше и поменяй: 
+           класс elem-pyro-bg (или hydro, electro, geo, cryo, dendro, anemo)
+           картинки (src="...")
+           имя, тексты и id в функциях openCharFullscreen и openCharInfo -->
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== ИНФО ОРУЖИЯ/АРТЕФАКТОВ/НАВЫКОВ ===== -->
+<div class="gift-fullscreen" id="charInfoFullscreen" onclick="closeCharInfo(event)">
+  <button class="gift-fs-close" onclick="closeCharInfo(event)">✕</button>
+  <div class="gift-fs-content" onclick="event.stopPropagation()">
+    <div class="gift-fs-info" style="padding-top: 40px; text-align: center;">
+      <h3 id="charInfoTitle" style="color:#ffcc00; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">Персонаж</h3>
+      <h2 id="charInfoSubtitle" style="font-size: 2.5rem; margin-bottom: 20px;">Оружие</h2>
+      <div style="background: rgba(255,0,51,0.15); border: 2px solid #ff6688; border-radius: 15px; padding: 25px; text-align: left;">
+        <h4 id="charInfoItemName" style="color:#fff; font-size: 1.3rem; margin-bottom: 10px;">Название</h4>
+        <p id="charInfoItemDesc" style="color:#ffddee; font-size: 1.1rem; line-height: 1.6;">Описание</p>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- ===== ПОЛНОЭКРАННЫЙ ПРОСМОТР ПОДАРКА ===== -->
 <div class="gift-fullscreen" id="giftFullscreen" onclick="closeGiftFullscreen(event)">
   <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
