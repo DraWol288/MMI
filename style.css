@@ -1609,3 +1609,40 @@ footer {
     font-size: 0.8rem;
   }
 }
+
+/* ===== ЦВЕТА ОКОН ПРИ ОТКРЫТИИ ПЕРСОНАЖЕЙ ===== */
+.char-theme-pyro { 
+  background: linear-gradient(160deg, #6b1500, #2a0500) !important; 
+  border-color: #ff6644 !important; 
+  box-shadow: 0 0 60px #ff4422 !important; 
+}
+.char-theme-hydro { 
+  background: linear-gradient(160deg, #003d82, #00112a) !important; 
+  border-color: #44aaff !important; 
+  box-shadow: 0 0 60px #2288ff !important; 
+}
+.char-theme-electro { 
+  background: linear-gradient(160deg, #550088, #150022) !important; 
+  border-color: #dd66ff !important; 
+  box-shadow: 0 0 60px #cc44ff !important; 
+}
+.char-theme-geo { 
+  background: linear-gradient(160deg, #6b4d00, #2a1e00) !important; 
+  border-color: #ffcc22 !important; 
+  box-shadow: 0 0 60px #ffaa00 !important; 
+}
+.char-theme-cryo { 
+  background: linear-gradient(160deg, #006b5c, #002a24) !important; 
+  border-color: #66ffee !important; 
+  box-shadow: 0 0 60px #44ffdd !important; 
+}
+.char-theme-dendro { 
+  background: linear-gradient(160deg, #2d6b00, #0e2a00) !important; 
+  border-color: #88ff66 !important; 
+  box-shadow: 0 0 60px #66ff44 !important; 
+}
+.char-theme-anemo { 
+  background: linear-gradient(160deg, #006b4d, #002a1e) !important; 
+  border-color: #22ffbb !important; 
+  box-shadow: 0 0 60px #00ffaa !important; 
+}
