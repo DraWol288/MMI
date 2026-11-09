@@ -701,3 +701,67 @@ document.addEventListener('keydown', (e) => {
 
 /* ===== ЗАПУСК ===== */
 renderCommissions();
+
+/* ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== */
+// Открытие фото персонажа на весь экран
+function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
+  const fs = document.getElementById('giftFullscreen');
+  const fsImage = document.getElementById('giftFsImage');
+  const fsPlaceholder = document.getElementById('giftFsPlaceholder');
+  
+  if (imgSrc && imgSrc !== 'undefined') {
+    fsImage.src = imgSrc;
+    fsImage.style.display = 'block';
+    fsPlaceholder.style.display = 'none';
+  } else {
+    fsImage.style.display = 'none';
+    fsPlaceholder.textContent = '👤';
+    fsPlaceholder.style.display = 'block';
+  }
+  
+  document.getElementById('giftFsTitle').textContent = name + ' (' + elementName + ')';
+  document.getElementById('giftFsDesc').textContent = desc;
+  
+  fs.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  
+  playPaimonSound();
+  spawnSpecialFirework(elementClass, window.innerWidth / 2, window.innerHeight / 2);
+}
+
+function closeGiftFullscreen(event) {
+  if (event) event.stopPropagation();
+  document.getElementById('giftFullscreen').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Открытие информации об оружии/артефактах/навыках
+function openCharInfo(charName, category, itemName, itemDesc) {
+  document.getElementById('charInfoTitle').textContent = charName;
+  document.getElementById('charInfoSubtitle').textContent = category;
+  document.getElementById('charInfoItemName').textContent = itemName;
+  document.getElementById('charInfoItemDesc').textContent = itemDesc;
+  
+  const fs = document.getElementById('charInfoFullscreen');
+  fs.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  
+  playPaimonSound();
+}
+
+function closeCharInfo(event) {
+  if (event) event.stopPropagation();
+  document.getElementById('charInfoFullscreen').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Закрытие по Escape для обоих окон
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const fs1 = document.getElementById('giftFullscreen');
+    if (fs1 && fs1.classList.contains('open')) closeGiftFullscreen();
+    
+    const fs2 = document.getElementById('charInfoFullscreen');
+    if (fs2 && fs2.classList.contains('open')) closeCharInfo();
+  }
+});
