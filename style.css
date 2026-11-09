@@ -1476,3 +1476,136 @@ footer {
 .paimon-task.done .paimon-task-content span {
   color: #66cc88;
 }
+
+/* ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== */
+.characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.char-card {
+  position: relative;
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: visible;
+}
+
+.char-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Цвета фона для разных элементов */
+.elem-pyro-bg { background: linear-gradient(180deg, #4a1000, #1a0005); border: 2px solid #ff4422; box-shadow: 0 0 20px rgba(255, 68, 34, 0.4); }
+.elem-hydro-bg { background: linear-gradient(180deg, #001a4a, #00051a); border: 2px solid #2288ff; box-shadow: 0 0 20px rgba(34, 136, 255, 0.4); }
+.elem-electro-bg { background: linear-gradient(180deg, #3a004a, #10001a); border: 2px solid #cc44ff; box-shadow: 0 0 20px rgba(204, 68, 255, 0.4); }
+.elem-geo-bg { background: linear-gradient(180deg, #4a3300, #1a1000); border: 2px solid #ffaa00; box-shadow: 0 0 20px rgba(255, 170, 0, 0.4); }
+.elem-cryo-bg { background: linear-gradient(180deg, #004a44, #001a15); border: 2px solid #44ffdd; box-shadow: 0 0 20px rgba(68, 255, 221, 0.4); }
+.elem-dendro-bg { background: linear-gradient(180deg, #1a4a00, #051a00); border: 2px solid #66ff44; box-shadow: 0 0 20px rgba(102, 255, 68, 0.4); }
+.elem-anemo-bg { background: linear-gradient(180deg, #004a33, #001a11); border: 2px solid #00ffaa; box-shadow: 0 0 20px rgba(0, 255, 170, 0.4); }
+
+/* Иконка элемента в углу */
+.char-element-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #1a0005;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  font-size: 1.2rem;
+}
+
+.char-element-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Фото персонажа */
+.char-photo {
+  width: 100%;
+  height: 220px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+}
+
+.char-photo:hover {
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.3);
+}
+
+.char-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.char-name {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+/* Кнопки справа/снизу */
+.char-action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.char-act-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.char-act-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .characters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .char-photo {
+    height: 140px;
+  }
+  .char-name {
+    font-size: 1.1rem;
+  }
+  .char-act-btn {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+}
