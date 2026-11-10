@@ -768,3 +768,379 @@ document.addEventListener('keydown', (e) => {
     if (fs2 && fs2.classList.contains('open')) closeCharInfo();
   }
 });
+
+/* ===== ТАЙМЕР ДО НГ ===== */
+function updateCountdown() {
+  const now = new Date();
+  const nextNG = new Date(now.getFullYear() + 1, 0, 1);
+  const diff = nextNG - now;
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / 1000 / 60) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+  
+  const el = document.getElementById('ngCountdown');
+  if (el) {
+    el.textContent = `${days} дн. ${hours} ч. ${mins} мин. ${secs} сек.`;
+  }
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* ===== СМОЛА ===== */
+let currentResin = 160;
+const maxResin = 160;
+
+function updateResinUI() {
+  const fill = document.getElementById('resinFill');
+  const text = document.getElementById('resinText');
+  if (fill && text) {
+    fill.style.width = (currentResin / maxResin) * 100 + '%';
+    text.textContent = `${Math.floor(currentResin)} / ${maxResin}`;
+  }
+}
+
+function spendResin() {
+  if (currentResin >= 40) {
+    currentResin -= 40;
+    updateResinUI();
+    playPaimonSound();
+    spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#00ffcc', '#44ffdd', '#fff']);
+    showToast('Блок с поздравлением открыт! 🎁');
+  } else {
+    showToast('Недостаточно смолы! 😔 Подожди немного...');
+  }
+}
+
+// Восстановление 1 единицы каждые 3 секунды
+setInterval(() => {
+  if (currentResin < maxResin) {
+    currentResin += 1;
+    updateResinUI();
+  }
+}, 3000);
+
+updateResinUI();
+
+/* ===== ПРОКАЧКА ===== */
+let charLevel = 1;
+const maxCharLevel = 90;
+
+function upgradeChar() {
+  if (charLevel >= maxCharLevel) return;
+  
+  // Прибавляем случайно от 1 до 10 уровней для красоты
+  const add = Math.floor(Math.random() * 10) + 1;
+  charLevel = Math.min(charLevel + add, maxCharLevel);
+  
+  const lvlEl = document.getElementById('charLevel');
+  if (lvlEl) lvlEl.textContent = `Уровень: ${charLevel} / 90`;
+  
+  const card = document.querySelector('.char-upgrade-card');
+  if (card) {
+    card.classList.add('flash-animation');
+    setTimeout(() => card.classList.remove('flash-animation'), 1000);
+  }
+  
+  playPaimonSound();
+  spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ffcc00', '#ffee00', '#ffaa00']);
+  
+  if (charLevel === maxCharLevel) {
+    document.getElementById('upgradeBtn').textContent = '⭐ МАКСИМУМ ⭐';
+    document.getElementById('upgradeBtn').disabled = true;
+    showToast('Матвей достиг максимального уровня! 🏆');
+  }
+}
+
+/* ===== АРТЕФАКТЫ ===== */
+let artifactsEquipped = false;
+
+function equipAllArtifacts() {
+  const cards = document.querySelectorAll('.artifact-card');
+  artifactsEquipped = !artifactsEquipped;
+  
+  cards.forEach((card, i) => {
+    setTimeout(() => {
+      if (artifactsEquipped) {
+        card.classList.add('equipped');
+        spawnFirework(
+          window.innerWidth * (0.2 + Math.random() * 0.6),
+          window.innerHeight * (0.2 + Math.random() * 0.4),
+          ['#44ff88', '#ffcc00']
+        );
+      } else {
+        card.classList.remove('equipped');
+      }
+    }, i * 150);
+  });
+  
+  playPaimonSound();
+  const btn = document.getElementById('equipAllBtn');
+  if (btn) btn.textContent = artifactsEquipped ? '❌ Снять всё' : '✨ Надеть всё';
+}
+
+/* ===== ПИТИ ===== */
+let pityCount = 10;
+const maxPity = 10;
+
+function addPity() {
+  if (pityCount > 0) {
+    pityCount--;
+    const el = document.getElementById('pityCount');
+    if (el) el.textContent = `${pityCount} круток`;
+    
+    playPaimonSound();
+    spawnFirework(window.innerWidth - 100, window.innerHeight - 100, ['#ffcc00', '#ffaa00', '#fff']);
+    
+    if (pityCount === 0) {
+      document.getElementById('pityCounter').classList.add('guaranteed');
+      if (el) el.textContent = 'ГАРАНТ!';
+      spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff88', '#ffcc00', '#fff', '#ff3366']);
+      setTimeout(() => {
+        pityCount = 10;
+        document.getElementById('pityCounter').classList.remove('guaranteed');
+        if (el) el.textContent = `${pityCount} круток`;
+      }, 4000);
+    }
+  }
+}
+
+/* ===== ТОСТ (Уведомления) ===== */
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #881133, #4a0018);
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 30px;
+    border: 2px solid #ff6688;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 0 30px #ff0033;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  `;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => toast.style.opacity = '1', 10);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+/* ===== БАЗА ПЕРСОНАЖЕЙ И КАРТОЧКИ ===== */
+const charactersData = {
+  nikita: {
+    name: 'Никита', rarity: '5★', element: 'Гео', elemClass: 'geo', photo: 'nikita.png',
+    jokeElement: 'Несокрушимость',
+    weapon: 'Двуручный меч Скалы',
+    passive: '+50% к силе щита, когда лень вставать с кровати.',
+    constellations: [
+      'C1: «Кристаллический панцирь»',
+      'C2: «Стена из дедлайнов»',
+      'C3: «Удар молота по столу»',
+      'C4: «Несокрушимое спокойствие»',
+      'C5: «Осколки в глазах экзаменатора»',
+      'C6: «Абсолютная броня от пар»'
+    ]
+  },
+  albert: {
+    name: 'Альберт', rarity: '4★', element: 'Анемо', elemClass: 'anemo', photo: 'albert.png',
+    jokeElement: 'Ветреность',
+    weapon: 'Лук Небесного Ветра',
+    passive: 'Шанс 30% уклониться от пары по физре.',
+    constellations: [
+      'C1: «Легкий бриз»',
+      'C2: «Свист в ушах на лекции»',
+      'C3: «Торнадо в голове»',
+      'C4: «Сдувает пыль с конспектов»',
+      'C5: «Ураган в столовой»',
+      'C6: «Полёт над сессией»'
+    ]
+  },
+  sasha: {
+    name: 'Саша', rarity: '4★', element: 'Дендро', elemClass: 'dendro', photo: 'sasha.png',
+    jokeElement: 'Ботаника',
+    weapon: 'Катализатор Цветения',
+    passive: '+100 к росту волос и ногтей во время сна.',
+    constellations: [
+      'C1: «Семечко знаний»',
+      'C2: «Быстрый рост»',
+      'C3: «Фотосинтез»',
+      'C4: «Цветение конспекта»',
+      'C5: «Лесной дух»',
+      'C6: «Мировое древо»'
+    ]
+  },
+  dima: {
+    name: 'Дима', rarity: '5★', element: 'Пиро', elemClass: 'pyro', photo: 'dima.png',
+    jokeElement: 'Выгорание',
+    weapon: 'Клеймор Пламени',
+    passive: 'Скорость передвижения +20%, если осталось 5 минут до дедлайна.',
+    constellations: [
+      'C1: «Искра надежды»',
+      'C2: «Пожар на кухне»',
+      'C3: «Сгоревшая лаба»',
+      'C4: «Огненный дедлайн»',
+      'C5: «Пепел от конспектов»',
+      'C6: «Феникс из сессии»'
+    ]
+  },
+  uliana: {
+    name: 'Ульяна', rarity: '5★', element: 'Крио', elemClass: 'cryo', photo: 'uliana.png',
+    jokeElement: 'Хладнокровие',
+    weapon: 'Меч Вечной Зимы',
+    passive: '+30% к шансу заморозить препода взглядом.',
+    constellations: [
+      'C1: «Снежинка на реснице»',
+      'C2: «Ледяной чай»',
+      'C3: «Замороженные эмоции»',
+      'C4: «Сосулька в деканате»',
+      'C5: «Метель в общежитии»',
+      'C6: «Абсолютный ноль»'
+    ]
+  },
+  matvey: {
+    name: 'Матвей', rarity: '5★', element: 'Гидро', elemClass: 'hydro', photo: 'matvey.png',
+    jokeElement: 'Прокрастинация',
+    weapon: 'Ноутбук (игровой)',
+    passive: '+20% к скорости сдачи лабы в последнюю ночь.',
+    constellations: [
+      'C1: «Дедлайн не приговор»',
+      'C2: «Кофеин в крови»',
+      'C3: «Гугл в помощь»',
+      'C4: «Сдать за 5 минут до конца»',
+      'C5: «Сессия без потерь»',
+      'C6: «Легенда потоков»'
+    ]
+  },
+  stas: {
+    name: 'Стас', rarity: '4★', element: 'Дендро', elemClass: 'dendro', photo: 'stas.png',
+    jokeElement: 'Прозябание',
+    weapon: 'Копьё Лианы',
+    passive: 'Восстанавливает 1 HP каждую минуту, пока лежишь.',
+    constellations: [
+      'C1: «Мох на конспекте»',
+      'C2: «Корни зла»',
+      'C3: «Лесная тропа»',
+      'C4: «Шипы на пути к зачету»',
+      'C5: «Дубрава»',
+      'C6: «Тайга»'
+    ]
+  },
+  vasya: {
+    name: 'Вася', rarity: '4★', element: 'Гео', elemClass: 'geo', photo: 'vasya.png',
+    jokeElement: 'Упёртость',
+    weapon: 'Молот Титанов',
+    passive: 'Не получает урон от критики препода (иммунитет).',
+    constellations: [
+      'C1: «Камень на душе»',
+      'C2: «Крепкий орешек»',
+      'C3: «Гранит науки»',
+      'C4: «Скала»',
+      'C5: «Тектонический сдвиг»',
+      'C6: «Планета»'
+    ]
+  },
+  pasha: {
+    name: 'Паша', rarity: '5★', element: 'Электро', elemClass: 'electro', photo: 'pasha.png',
+    jokeElement: 'Скорость',
+    weapon: 'Катана Грозы',
+    passive: 'Может сдать 3 лабы за 1 час.',
+    constellations: [
+      'C1: «Искра»',
+      'C2: «Разряд»',
+      'C3: «Молния»',
+      'C4: «Гроза»',
+      'C5: «Шторм»',
+      'C6: «Тесла»'
+    ]
+  }
+};
+
+let currentFullCharId = null;
+let currentFullCharLevel = 1;
+
+function openFullCharCard(id) {
+  const data = charactersData[id];
+  if (!data) return;
+  
+  currentFullCharId = id;
+  currentFullCharLevel = Math.floor(Math.random() * 50) + 1; // Рандомный стартовый уровень для интереса
+  
+  const fs = document.getElementById('giftFullscreen');
+  const fsContent = fs.querySelector('.gift-fs-content');
+  
+  // Окрашиваем окно
+  fsContent.className = 'gift-fs-content char-theme-' + data.elemClass;
+  
+  // Вставляем HTML внутрь
+  fsContent.innerHTML = `
+    <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
+    <div class="full-char-card">
+      <div class="full-char-header">
+        <div class="full-char-name">${data.name}</div>
+        <div class="full-char-rarity">${data.rarity}</div>
+      </div>
+      <div class="full-char-element elem-${data.elemClass}" style="color: #fff; background: rgba(0,0,0,0.4);">
+        Элемент: ${data.jokeElement} (${data.element})
+      </div>
+      
+      <div class="full-char-body">
+        <div class="full-char-photo">
+          <img src="${data.photo}" onerror="this.parentElement.innerText='👤'">
+        </div>
+        <div class="full-char-details">
+          <p>🗡️ Оружие: <strong>${data.weapon}</strong></p>
+          <p>✨ Пассивка: <strong>${data.passive}</strong></p>
+          <p style="margin-top: 15px; color: #ffcc00;">🌌 Созвездия:</p>
+          <ul class="constellation-list">
+            ${data.constellations.map(c => `<li>${c}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      
+      <div class="upgrade-section">
+        <div class="upgrade-level" id="fullCharLevelText">Уровень: ${currentFullCharLevel} / 90</div>
+        <button class="game-btn" id="fullCharUpgradeBtn" onclick="upgradeFullChar()">⬆️ Возвысить</button>
+      </div>
+    </div>
+  `;
+  
+  fs.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  playPaimonSound();
+}
+
+function upgradeFullChar() {
+  if (currentFullCharLevel >= 90) return;
+  
+  const add = Math.floor(Math.random() * 10) + 1;
+  currentFullCharLevel = Math.min(currentFullCharLevel + add, 90);
+  
+  const lvlEl = document.getElementById('fullCharLevelText');
+  if (lvlEl) lvlEl.textContent = `Уровень: ${currentFullCharLevel} / 90`;
+  
+  const card = document.querySelector('.full-char-card');
+  if (card) {
+    card.classList.add('level-up-anim');
+    setTimeout(() => card.classList.remove('level-up-anim'), 1000);
+  }
+  
+  playPaimonSound();
+  spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ffcc00', '#ffee00', '#fff']);
+  
+  if (currentFullCharLevel === 90) {
+    document.getElementById('fullCharUpgradeBtn').textContent = '⭐ МАКСИМУМ ⭐';
+    document.getElementById('fullCharUpgradeBtn').disabled = true;
+  }
+}
