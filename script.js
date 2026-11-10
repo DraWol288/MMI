@@ -735,16 +735,63 @@ function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
 
 // Открытие информации об оружии/артефактах/навыках
 function openCharInfo(charName, category, itemName, itemDesc, elementClass) {
-  document.getElementById('charInfoTitle').textContent = charName;
-  document.getElementById('charInfoSubtitle').textContent = category;
-  document.getElementById('charInfoItemName').textContent = itemName;
-  document.getElementById('charInfoItemDesc').textContent = itemDesc;
-  
   const fs = document.getElementById('charInfoFullscreen');
   const fsContent = fs.querySelector('.gift-fs-content');
   
   // Сбрасываем старые классы и ставим новый цвет
   fsContent.className = 'gift-fs-content char-theme-' + elementClass;
+  
+  let innerHTML = `
+    <div class="gift-fs-info" style="padding-top: 40px; text-align: center;">
+      <h3 id="charInfoTitle" style="color:#ffcc00; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">${charName}</h3>
+      <h2 id="charInfoSubtitle" style="font-size: 2.5rem; margin-bottom: 20px;">${category}</h2>
+  `;
+
+  // Если открываем артефакты, выводим красивый список из 5 штук
+  if (category === 'Артефакты') {
+    // Генерируем шуточные артефакты в зависимости от стихии персонажа
+    const artifactsList = [
+      { name: 'Цветок жизни', main: '+ 4780 HP', sub: '+20% к силе сна' },
+      { name: 'Перо смерти', main: '+ 311 Сила атаки', sub: '+15% к удаче на экзамене' },
+      { name: 'Пески времени', main: '+ 187 Мастерство', sub: '+20% к шансу выбить 50/50' },
+      { name: 'Кубок пространства', main: '+ 46% Бонус элемента', sub: '-50% к голоду в 3 часа ночи' },
+      { name: 'Корона разума', main: '+ 62% Крит. урон', sub: '+10% к пониманию лекций' }
+    ];
+
+    innerHTML += `
+      <div class="artifact-modal-list">
+        <div class="artifact-set-title" style="margin-bottom: 15px; font-weight: bold; color: #fff;">
+          Набор: <span style="color: #ffcc00;">«${itemName}»</span>
+        </div>
+    `;
+    
+    artifactsList.forEach((art, index) => {
+      innerHTML += `
+        <div class="artifact-item-row">
+          <div class="artifact-icon">${['🌸', '🪶', '⏳', '🏆', '👑'][index]}</div>
+          <div class="artifact-details">
+            <div class="artifact-name">${art.name} <span style="color:#ffcc00">★★★★★</span></div>
+            <div class="artifact-main-stat">${art.main}</div>
+            <div class="artifact-sub-stat">${art.sub}</div>
+          </div>
+        </div>
+      `;
+    });
+
+    innerHTML += `</div>`;
+  } 
+  // Если открываем Оружие или Навыки — показываем стандартный текст
+  else {
+    innerHTML += `
+      <div style="background: rgba(0,0,0,0.5); border: 2px solid #ff6688; border-radius: 15px; padding: 25px; text-align: left;">
+        <h4 style="color:#fff; font-size: 1.3rem; margin-bottom: 10px;">${itemName}</h4>
+        <p style="color:#ffddee; font-size: 1.1rem; line-height: 1.6;">${itemDesc}</p>
+      </div>
+    `;
+  }
+
+  innerHTML += `</div>`;
+  fsContent.innerHTML = `<button class="gift-fs-close" onclick="closeCharInfo(event)">✕</button>` + innerHTML;
   
   fs.classList.add('open');
   document.body.style.overflow = 'hidden';
