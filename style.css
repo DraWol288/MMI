@@ -2012,3 +2012,64 @@ footer {
   .full-char-photo { width: 150px; height: 150px; }
   .full-char-name { font-size: 1.4rem; }
 }
+
+/* ===== СПИСОК АРТЕФАКТОВ В ОКНЕ ПЕРСОНАЖА ===== */
+.artifact-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.artifact-item-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid rgba(255,102,136,0.5);
+  border-radius: 12px;
+  padding: 12px 15px;
+  transition: all 0.2s;
+}
+
+.artifact-item-row:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #ff6688;
+  transform: translateX(5px);
+}
+
+.artifact-icon {
+  font-size: 2.2rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.artifact-details {
+  flex: 1;
+}
+
+.artifact-name {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.05rem;
+  margin-bottom: 3px;
+}
+
+.artifact-main-stat {
+  color: #fff;
+  font-weight: 900;
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.artifact-sub-stat {
+  color: #ffaacc;
+  font-size: 0.9rem;
+}
