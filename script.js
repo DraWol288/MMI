@@ -449,7 +449,7 @@ let player, platforms, cake, gameState, cameraX, keys;
 let currentLevel = 1;
 const maxLevel = 3;
 const levelTargets = ['🎂', '🎁', '🏆'];
-let isLevelTransitioning = false; // Флаг для блокировки во время перехода
+let isLevelTransitioning = false;
 
 function initGame() {
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
@@ -497,11 +497,49 @@ function initGame() {
   gameState = 'playing';
   cameraX = 0;
   keys = {};
-  isLevelTransitioning = false;
+  isLevelTransitioning = false; 
+}
+
+document.addEventListener('keydown', (e) => {
+  if (['Space','ArrowUp','KeyW'].includes(e.code)) {
+    if (gameState === 'playing' && player && player.onGround) {
+      e.preventDefault();
+      player.vy = -12;
+      player.onGround = false;
+    }
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = true; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = true; }
+});
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = false; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = false; }
+});
+
+if (canvas) {
+  canvas.addEventListener('click', () => {
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -12;
+      player.onGround = false;
+    }
+  });
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -12;
+      player.onGround = false;
+    }
+  }, { passive: false });
 }
 
 function updateGame() {
-  if (gameState !== 'playing' || !player || isLevelTransitioning) return;
+  if (gameState !== 'playing' || !player) return;
+  
+  if (isLevelTransitioning) {
+    player.vx = 0;
+    player.vy = 0;
+    return; 
+  }
   
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
@@ -532,7 +570,6 @@ function updateGame() {
       }, 2000);
     }
     if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-    
     initGame();
     return;
   }
@@ -540,12 +577,10 @@ function updateGame() {
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
-  // Проверяем финиш только если мы не в процессе перехода
-  if (!isLevelTransitioning &&
-      player.x + player.w > cake.x && player.x < cake.x + cake.w &&
+  if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     
-    isLevelTransitioning = true; // Блокируем управление и повторное срабатывание
+    isLevelTransitioning = true; 
     const hint = document.getElementById('gameHint');
     
     if (currentLevel < maxLevel) {
@@ -555,10 +590,9 @@ function updateGame() {
       playPaimonSound();
       spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff00', '#ffcc00', '#fff']);
       
-      // Ждем 1.5 секунды и только потом грузим новый уровень
       setTimeout(() => {
         if (hint) hint.textContent = `🎯 Уровень ${currentLevel}: Доберись до ${levelTargets[currentLevel-1]}`;
-        initGame(); // initGame сбросит isLevelTransitioning = false
+        initGame();
       }, 1500);
       
     } else {
@@ -580,7 +614,6 @@ function drawGame() {
   ctx.fillStyle = '#44001a';
   ctx.fillRect(0, 0, W, H);
   
-  // Звёзды
   for (let i = 0; i < 50; i++) {
     const sx = (i * 137 + cameraX * 0.2) % W;
     const sy = (i * 89) % (H - 100);
@@ -591,7 +624,6 @@ function drawGame() {
   ctx.save();
   ctx.translate(-cameraX, 0);
   
-  // Платформы
   platforms.forEach(p => {
     const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.h);
     grad.addColorStop(0, '#ff6688');
@@ -605,7 +637,6 @@ function drawGame() {
     ctx.fillRect(p.x, p.y, p.w, 3);
   });
   
-  // Цель уровня
   ctx.shadowBlur = 25;
   ctx.shadowColor = '#ffcc00';
   ctx.font = '40px serif';
@@ -613,7 +644,6 @@ function drawGame() {
   ctx.fillText(levelTargets[currentLevel-1], cake.x + cake.w/2, cake.y + cake.h);
   ctx.shadowBlur = 0;
   
-  // Игрок
   ctx.shadowBlur = 20;
   ctx.shadowColor = '#00ffaa';
   ctx.fillStyle = '#ff3366';
@@ -624,7 +654,6 @@ function drawGame() {
   ctx.shadowBlur = 0;
   ctx.restore();
   
-  // UI
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 16px sans-serif';
   ctx.textAlign = 'left';
@@ -665,7 +694,7 @@ function stopMove(direction) {
 
 function mobileJump() {
   if (gameState === 'playing' && player && player.onGround) {
-    player.vy = -11;
+    player.vy = -12;
     player.onGround = false;
     if (navigator.vibrate) navigator.vibrate(20);
   }
