@@ -2073,3 +2073,48 @@ footer {
   color: #ffaacc;
   font-size: 0.9rem;
 }
+
+/* ===== ВСПЛЫВАЮЩИЕ ОКНА ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(5px);
+  z-index: 4000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.popup-overlay.open { display: flex; }
+
+.popup-content {
+  background: linear-gradient(160deg, #881133, #4a0018);
+  border: 4px solid #ffcc00;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 0 80px #ffaa00, 0 0 150px rgba(255, 204, 0, 0.5);
+  animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.popup-content h2 {
+  color: #ffee00;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  text-shadow: 0 0 20px #ffaa00;
+}
+
+.popup-content p {
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
