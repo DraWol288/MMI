@@ -452,37 +452,6 @@
   </div>
 </section>
 
-<!-- ===== ПРОКАЧКА ПЕРСОНАЖА (МАТВЕЙ) ===== -->
-<section class="section">
-  <h2 class="section-title">⬆️ Прокачка Матвея</h2>
-  <div class="char-upgrade-card">
-    <div class="char-upgrade-header">
-      <div class="char-upgrade-name">Матвей <span style="color:#ffcc00">5★</span></div>
-      <div class="char-upgrade-element">Элемент: Прокрастинация</div>
-    </div>
-    <div class="char-upgrade-img">
-      <img src="matvey.png" alt="Матвей" onerror="this.style.display='none'">
-    </div>
-    <div class="char-upgrade-stats">
-      <p>🗡️ Оружие: <strong>Ноутбук</strong></p>
-      <p>✨ Пассивка: <strong>+20% к скорости сдачи лабы в последнюю ночь</strong></p>
-      <p>🌌 Созвездия:</p>
-      <ul style="font-size: 0.85rem; color: #ffaacc; margin-left: 20px; margin-top: 5px; line-height: 1.5;">
-        <li>C1: «Дедлайн не приговор»</li>
-        <li>C2: «Кофеин в крови»</li>
-        <li>C3: «Гугл в помощь»</li>
-        <li>C4: «Сдать за 5 минут до конца»</li>
-        <li>C5: «Сессия без потерь»</li>
-        <li>C6: «Легенда потоков»</li>
-      </ul>
-    </div>
-    <div class="char-upgrade-action">
-      <div class="char-level" id="charLevel">Уровень: 1 / 90</div>
-      <button class="game-btn" id="upgradeBtn" onclick="upgradeChar()">⬆️ Возвысить</button>
-    </div>
-  </div>
-</section>
-
 <!-- ===== АРТЕФАКТЫ НА УДАЧУ ===== -->
 <section class="section">
   <h2 class="section-title">💎 Артефакты на удачу</h2>
@@ -498,12 +467,21 @@
   </div>
 </section>
 
-<!-- ===== СЧЁТЧИК ПИТИ ===== -->
+<!-- ===== ПЛАШКА ГАРАНТА ===== -->
 <div class="pity-counter" id="pityCounter" onclick="addPity()">
   <div class="pity-icon">🌟</div>
   <div class="pity-text">
     <span>До гаранта новогоднего чуда:</span>
     <strong id="pityCount">10 круток</strong>
+  </div>
+</div>
+
+<!-- ===== ВСПЛЫВАЮЩИЕ ОКНА ===== -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()">
+  <div class="popup-content" id="popupContent" onclick="event.stopPropagation()">
+    <h2 id="popupTitle">Заголовок</h2>
+    <p id="popupDesc">Описание</p>
+    <button class="game-btn" onclick="closePopup()">Закрыть</button>
   </div>
 </div>
 
