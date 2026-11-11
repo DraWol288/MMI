@@ -451,43 +451,50 @@ const maxLevel = 3;
 const levelTargets = ['🎂', '🎁', '🏆'];
 
 function initGame() {
+  // Стартовая позиция
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
   
   if (currentLevel === 1) {
+    // Уровень 1 — Легкий
     platforms = [
       { x: 0, y: H - 40, w: 200, h: 40 },
-      { x: 250, y: H - 110, w: 100, h: 20 },
-      { x: 420, y: H - 180, w: 100, h: 20 },
-      { x: 590, y: H - 250, w: 100, h: 20 },
-      { x: 760, y: H - 200, w: 100, h: 20 },
-      { x: 930, y: H - 280, w: 100, h: 20 },
-      { x: 1100, y: H - 220, w: 120, h: 20 },
-      { x: 1300, y: H - 150, w: 150, h: 20 }
+      { x: 250, y: H - 100, w: 100, h: 20 },
+      { x: 450, y: H - 160, w: 100, h: 20 },
+      { x: 650, y: H - 220, w: 100, h: 20 },
+      { x: 850, y: H - 160, w: 100, h: 20 },
+      { x: 1050, y: H - 220, w: 100, h: 20 },
+      { x: 1250, y: H - 150, w: 150, h: 20 }
     ];
-    cake = { x: 1420, y: H - 210, w: 40, h: 40 };
-  } else if (currentLevel === 2) {
+    cake = { x: 1350, y: H - 190, w: 40, h: 40 };
+  } 
+  else if (currentLevel === 2) {
+    // Уровень 2 — Средний (зигзаг)
     platforms = [
-      { x: 0, y: H - 40, w: 150, h: 40 },
-      { x: 250, y: H - 140, w: 80, h: 20 },
-      { x: 450, y: H - 240, w: 80, h: 20 },
-      { x: 650, y: H - 160, w: 80, h: 20 },
-      { x: 850, y: H - 260, w: 80, h: 20 },
-      { x: 1050, y: H - 180, w: 80, h: 20 },
-      { x: 1250, y: H - 280, w: 150, h: 20 }
+      { x: 0, y: H - 40, w: 200, h: 40 },
+      { x: 280, y: H - 120, w: 80, h: 20 },
+      { x: 460, y: H - 80, w: 80, h: 20 },
+      { x: 640, y: H - 160, w: 80, h: 20 },
+      { x: 820, y: H - 240, w: 80, h: 20 },
+      { x: 1000, y: H - 160, w: 80, h: 20 },
+      { x: 1180, y: H - 240, w: 100, h: 20 },
+      { x: 1380, y: H - 160, w: 100, h: 20 }
     ];
-    cake = { x: 1350, y: H - 320, w: 40, h: 40 };
-  } else {
+    cake = { x: 1480, y: H - 200, w: 40, h: 40 };
+  } 
+  else {
+    // Уровень 3 — Сложный (высокие прыжки)
     platforms = [
-      { x: 0, y: H - 40, w: 150, h: 40 },
-      { x: 200, y: H - 120, w: 80, h: 20 },
-      { x: 400, y: H - 200, w: 80, h: 20 },
-      { x: 600, y: H - 280, w: 80, h: 20 },
-      { x: 800, y: H - 200, w: 80, h: 20 },
-      { x: 1000, y: H - 280, w: 80, h: 20 },
-      { x: 1200, y: H - 200, w: 80, h: 20 },
-      { x: 1400, y: H - 280, w: 100, h: 20 }
+      { x: 0, y: H - 40, w: 200, h: 40 },
+      { x: 250, y: H - 110, w: 80, h: 20 },
+      { x: 400, y: H - 190, w: 80, h: 20 },
+      { x: 550, y: H - 270, w: 80, h: 20 },
+      { x: 750, y: H - 190, w: 80, h: 20 },
+      { x: 900, y: H - 110, w: 80, h: 20 },
+      { x: 1100, y: H - 190, w: 80, h: 20 },
+      { x: 1250, y: H - 270, w: 100, h: 20 },
+      { x: 1450, y: H - 190, w: 100, h: 20 }
     ];
-    cake = { x: 1520, y: H - 320, w: 40, h: 40 };
+    cake = { x: 1550, y: H - 230, w: 40, h: 40 };
   }
   
   gameState = 'playing';
@@ -499,7 +506,7 @@ document.addEventListener('keydown', (e) => {
   if (['Space','ArrowUp','KeyW'].includes(e.code)) {
     if (gameState === 'playing' && player && player.onGround) {
       e.preventDefault();
-      player.vy = -11;
+      player.vy = -12; // Немного усилил прыжок
       player.onGround = false;
     }
   }
@@ -514,14 +521,14 @@ document.addEventListener('keyup', (e) => {
 if (canvas) {
   canvas.addEventListener('click', () => {
     if (gameState === 'playing' && player.onGround) {
-      player.vy = -11;
+      player.vy = -12;
       player.onGround = false;
     }
   });
   canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (gameState === 'playing' && player.onGround) {
-      player.vy = -11;
+      player.vy = -12;
       player.onGround = false;
     }
   }, { passive: false });
@@ -530,15 +537,19 @@ if (canvas) {
 function updateGame() {
   if (gameState !== 'playing' || !player) return;
   
+  // Движение по горизонтали
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
   else player.vx *= 0.8;
   
   player.x += player.vx;
+  
+  // Гравитация
   player.vy += 0.6;
   player.y += player.vy;
   player.onGround = false;
   
+  // Столкновение с платформами
   platforms.forEach(p => {
     if (player.x + player.w > p.x && player.x < p.x + p.w &&
         player.vy >= 0 && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + player.vy + 5) {
@@ -548,6 +559,7 @@ function updateGame() {
     }
   });
   
+  // Падение в пропасть
   if (player.y > H) {
     const hint = document.getElementById('gameHint');
     if (hint) {
@@ -564,9 +576,11 @@ function updateGame() {
     return;
   }
 
+  // Камера
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
+  // Достижение финиша
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     
@@ -602,14 +616,19 @@ function drawGame() {
   if (!ctx) return;
   ctx.fillStyle = '#44001a';
   ctx.fillRect(0, 0, W, H);
+  
+  // Звёзды
   for (let i = 0; i < 50; i++) {
     const sx = (i * 137 + cameraX * 0.2) % W;
     const sy = (i * 89) % (H - 100);
     ctx.fillStyle = `rgba(255, 200, 220, 0.7)`;
     ctx.fillRect(sx, sy, 2, 2);
   }
+  
   ctx.save();
   ctx.translate(-cameraX, 0);
+  
+  // Платформы
   platforms.forEach(p => {
     const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.h);
     grad.addColorStop(0, '#ff6688');
@@ -622,12 +641,16 @@ function drawGame() {
     ctx.fillStyle = 'rgba(255,255,255,0.35)';
     ctx.fillRect(p.x, p.y, p.w, 3);
   });
+  
+  // Цель уровня
   ctx.shadowBlur = 25;
   ctx.shadowColor = '#ffcc00';
   ctx.font = '40px serif';
   ctx.textAlign = 'center';
   ctx.fillText(levelTargets[currentLevel-1], cake.x + cake.w/2, cake.y + cake.h);
   ctx.shadowBlur = 0;
+  
+  // Игрок
   ctx.shadowBlur = 20;
   ctx.shadowColor = '#00ffaa';
   ctx.fillStyle = '#ff3366';
@@ -637,10 +660,12 @@ function drawGame() {
   ctx.fillRect(player.x + 18, player.y + 8, 6, 6);
   ctx.shadowBlur = 0;
   ctx.restore();
+  
+  // UI
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 16px sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('🏃 Прыжок: Пробел / ↑ / Тап', 15, 25);
+  ctx.fillText(`🏃 Уровень ${currentLevel} из ${maxLevel}`, 15, 25);
   
   if (gameState === 'won') {
     ctx.fillStyle = 'rgba(0,0,0,0.75)';
