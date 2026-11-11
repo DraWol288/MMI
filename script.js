@@ -449,13 +449,12 @@ let player, platforms, cake, gameState, cameraX, keys;
 let currentLevel = 1;
 const maxLevel = 3;
 const levelTargets = ['🎂', '🎁', '🏆'];
+let isLevelTransitioning = false; // Флаг для блокировки во время перехода
 
 function initGame() {
-  // Стартовая позиция
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
   
   if (currentLevel === 1) {
-    // Уровень 1 — Легкий
     platforms = [
       { x: 0, y: H - 40, w: 200, h: 40 },
       { x: 250, y: H - 100, w: 100, h: 20 },
@@ -468,7 +467,6 @@ function initGame() {
     cake = { x: 1350, y: H - 190, w: 40, h: 40 };
   } 
   else if (currentLevel === 2) {
-    // Уровень 2 — Средний (зигзаг)
     platforms = [
       { x: 0, y: H - 40, w: 200, h: 40 },
       { x: 280, y: H - 120, w: 80, h: 20 },
@@ -482,7 +480,6 @@ function initGame() {
     cake = { x: 1480, y: H - 200, w: 40, h: 40 };
   } 
   else {
-    // Уровень 3 — Сложный (высокие прыжки)
     platforms = [
       { x: 0, y: H - 40, w: 200, h: 40 },
       { x: 250, y: H - 110, w: 80, h: 20 },
@@ -500,56 +497,21 @@ function initGame() {
   gameState = 'playing';
   cameraX = 0;
   keys = {};
-}
-
-document.addEventListener('keydown', (e) => {
-  if (['Space','ArrowUp','KeyW'].includes(e.code)) {
-    if (gameState === 'playing' && player && player.onGround) {
-      e.preventDefault();
-      player.vy = -12; // Немного усилил прыжок
-      player.onGround = false;
-    }
-  }
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = true; }
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = true; }
-});
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = false; }
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = false; }
-});
-
-if (canvas) {
-  canvas.addEventListener('click', () => {
-    if (gameState === 'playing' && player.onGround) {
-      player.vy = -12;
-      player.onGround = false;
-    }
-  });
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (gameState === 'playing' && player.onGround) {
-      player.vy = -12;
-      player.onGround = false;
-    }
-  }, { passive: false });
+  isLevelTransitioning = false;
 }
 
 function updateGame() {
-  if (gameState !== 'playing' || !player) return;
+  if (gameState !== 'playing' || !player || isLevelTransitioning) return;
   
-  // Движение по горизонтали
   if (keys.right) player.vx = Math.min(player.vx + 1.5, 5);
   else if (keys.left) player.vx = Math.max(player.vx - 1.5, -5);
   else player.vx *= 0.8;
   
   player.x += player.vx;
-  
-  // Гравитация
   player.vy += 0.6;
   player.y += player.vy;
   player.onGround = false;
   
-  // Столкновение с платформами
   platforms.forEach(p => {
     if (player.x + player.w > p.x && player.x < p.x + p.w &&
         player.vy >= 0 && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + player.vy + 5) {
@@ -559,7 +521,6 @@ function updateGame() {
     }
   });
   
-  // Падение в пропасть
   if (player.y > H) {
     const hint = document.getElementById('gameHint');
     if (hint) {
@@ -576,14 +537,15 @@ function updateGame() {
     return;
   }
 
-  // Камера
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
-  // Достижение финиша
-  if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
+  // Проверяем финиш только если мы не в процессе перехода
+  if (!isLevelTransitioning &&
+      player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     
+    isLevelTransitioning = true; // Блокируем управление и повторное срабатывание
     const hint = document.getElementById('gameHint');
     
     if (currentLevel < maxLevel) {
@@ -593,9 +555,10 @@ function updateGame() {
       playPaimonSound();
       spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff00', '#ffcc00', '#fff']);
       
+      // Ждем 1.5 секунды и только потом грузим новый уровень
       setTimeout(() => {
         if (hint) hint.textContent = `🎯 Уровень ${currentLevel}: Доберись до ${levelTargets[currentLevel-1]}`;
-        initGame();
+        initGame(); // initGame сбросит isLevelTransitioning = false
       }, 1500);
       
     } else {
