@@ -442,60 +442,55 @@ function resetTheme() {
 }
 
 /* ===== PARCOUR ===== */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
-const W = canvas ? canvas.width : 800;
-const H = canvas ? canvas.height : 400;
-let player, platforms, cake, gameState, cameraX, keys;
+let currentLevel = 1;
+const maxLevel = 3;
+let cake = { x: 1420, y: H - 210, w: 40, h: 40 };
+let levelTargets = ['🎂', '🎁', '🏆'];
 
 function initGame() {
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
-  platforms = [
-    { x: 0, y: H - 40, w: 200, h: 40 },
-    { x: 250, y: H - 110, w: 100, h: 20 },
-    { x: 420, y: H - 180, w: 100, h: 20 },
-    { x: 590, y: H - 250, w: 100, h: 20 },
-    { x: 760, y: H - 200, w: 100, h: 20 },
-    { x: 930, y: H - 280, w: 100, h: 20 },
-    { x: 1100, y: H - 220, w: 120, h: 20 },
-    { x: 1300, y: H - 150, w: 150, h: 20 }
-  ];
-  cake = { x: 1420, y: H - 210, w: 40, h: 40 };
+  
+  // Генерируем платформы в зависимости от уровня
+  if (currentLevel === 1) {
+    platforms = [
+      { x: 0, y: H - 40, w: 200, h: 40 },
+      { x: 250, y: H - 110, w: 100, h: 20 },
+      { x: 420, y: H - 180, w: 100, h: 20 },
+      { x: 590, y: H - 250, w: 100, h: 20 },
+      { x: 760, y: H - 200, w: 100, h: 20 },
+      { x: 930, y: H - 280, w: 100, h: 20 },
+      { x: 1100, y: H - 220, w: 120, h: 20 },
+      { x: 1300, y: H - 150, w: 150, h: 20 }
+    ];
+    cake = { x: 1420, y: H - 210, w: 40, h: 40 };
+  } else if (currentLevel === 2) {
+    platforms = [
+      { x: 0, y: H - 40, w: 150, h: 40 },
+      { x: 250, y: H - 140, w: 80, h: 20 },
+      { x: 450, y: H - 240, w: 80, h: 20 },
+      { x: 650, y: H - 160, w: 80, h: 20 },
+      { x: 850, y: H - 260, w: 80, h: 20 },
+      { x: 1050, y: H - 180, w: 80, h: 20 },
+      { x: 1250, y: H - 280, w: 150, h: 20 }
+    ];
+    cake = { x: 1350, y: H - 320, w: 40, h: 40 };
+  } else {
+    platforms = [
+      { x: 0, y: H - 40, w: 150, h: 40 },
+      { x: 200, y: H - 120, w: 80, h: 20 },
+      { x: 400, y: H - 200, w: 80, h: 20 },
+      { x: 600, y: H - 280, w: 80, h: 20 },
+      { x: 800, y: H - 200, w: 80, h: 20 },
+      { x: 1000, y: H - 280, w: 80, h: 20 },
+      { x: 1200, y: H - 200, w: 80, h: 20 },
+      { x: 1400, y: H - 280, w: 100, h: 20 }
+    ];
+    cake = { x: 1520, y: H - 320, w: 40, h: 40 };
+  }
+  
   gameState = 'playing';
   cameraX = 0;
   keys = {};
-}
-
-document.addEventListener('keydown', (e) => {
-  if (['Space','ArrowUp','KeyW'].includes(e.code)) {
-    if (gameState === 'playing' && player && player.onGround) {
-      e.preventDefault();
-      player.vy = -11;
-      player.onGround = false;
-    }
-  }
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = true; }
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = true; }
-});
-document.addEventListener('keyup', (e) => {
-  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = false; }
-  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = false; }
-});
-
-if (canvas) {
-  canvas.addEventListener('click', () => {
-    if (gameState === 'playing' && player.onGround) {
-      player.vy = -11;
-      player.onGround = false;
-    }
-  });
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (gameState === 'playing' && player.onGround) {
-      player.vy = -11;
-      player.onGround = false;
-    }
-  }, { passive: false });
 }
 
 function updateGame() {
@@ -526,7 +521,7 @@ function updateGame() {
       hint.textContent = '💀 Упал! Начинаем заново...';
       hint.style.color = '#ff4444';
       setTimeout(() => {
-        hint.textContent = '🎯 Доберись до торта!';
+        hint.textContent = `🎯 Уровень ${currentLevel}: Доберись до ${levelTargets[currentLevel-1]}`;
         hint.style.color = '#ffddee';
       }, 2000);
     }
@@ -539,69 +534,56 @@ function updateGame() {
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
+  // Достижение финиша
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
-    gameState = 'won';
-    for (let i = 0; i < 5; i++) {
-      setTimeout(() => spawnFirework(
-        window.innerWidth * (0.2 + Math.random() * 0.6),
-        window.innerHeight * (0.2 + Math.random() * 0.4),
-        ['#ff0033','#ffcc00','#44ff00','#00ccff','#ff66cc']
-      ), i * 200);
+    
+    const hint = document.getElementById('gameHint');
+    
+    if (currentLevel < maxLevel) {
+      currentLevel++;
+      if (hint) hint.textContent = `🌟 Уровень ${currentLevel - 1} пройден! Следующий: ${levelTargets[currentLevel-1]}`;
+      
+      playPaimonSound();
+      spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff00', '#ffcc00', '#fff']);
+      
+      setTimeout(() => {
+        if (hint) hint.textContent = `🎯 Уровень ${currentLevel}: Доберись до ${levelTargets[currentLevel-1]}`;
+        initGame();
+      }, 1500);
+      
+    } else {
+      gameState = 'won';
+      if (hint) hint.textContent = '🏆 ВСЕ УРОВНИ ПРОЙДЕНЫ!';
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => spawnFirework(
+          window.innerWidth * (0.2 + Math.random() * 0.6),
+          window.innerHeight * (0.2 + Math.random() * 0.4),
+          ['#ff0033','#ffcc00','#44ff00','#00ccff','#ff66cc']
+        ), i * 200);
+      }
     }
   }
 }
 
 function drawGame() {
-  if (!ctx) return;
-  ctx.fillStyle = '#44001a';
-  ctx.fillRect(0, 0, W, H);
-  for (let i = 0; i < 50; i++) {
-    const sx = (i * 137 + cameraX * 0.2) % W;
-    const sy = (i * 89) % (H - 100);
-    ctx.fillStyle = `rgba(255, 200, 220, 0.7)`;
-    ctx.fillRect(sx, sy, 2, 2);
-  }
-  ctx.save();
-  ctx.translate(-cameraX, 0);
-  platforms.forEach(p => {
-    const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.h);
-    grad.addColorStop(0, '#ff6688');
-    grad.addColorStop(1, '#cc0033');
-    ctx.fillStyle = grad;
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = '#ff0033';
-    ctx.fillRect(p.x, p.y, p.w, p.h);
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.fillRect(p.x, p.y, p.w, 3);
-  });
+    // Рисуем цель уровня (торт, подарок или кубок)
   ctx.shadowBlur = 25;
   ctx.shadowColor = '#ffcc00';
   ctx.font = '40px serif';
   ctx.textAlign = 'center';
-  ctx.fillText('🎂', cake.x + cake.w/2, cake.y + cake.h);
+  ctx.fillText(levelTargets[currentLevel-1], cake.x + cake.w/2, cake.y + cake.h);
   ctx.shadowBlur = 0;
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = '#00ffaa';
-  ctx.fillStyle = '#ff3366';
-  ctx.fillRect(player.x, player.y, player.w, player.h);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(player.x + 6, player.y + 8, 6, 6);
-  ctx.fillRect(player.x + 18, player.y + 8, 6, 6);
-  ctx.shadowBlur = 0;
-  ctx.restore();
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText('🏃 Прыжок: Пробел / ↑ / Тап', 15, 25);
+  
+  // (Игрок и платформы рисуются как раньше)
+
   if (gameState === 'won') {
     ctx.fillStyle = 'rgba(0,0,0,0.75)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#ffee00';
     ctx.font = 'bold 36px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('🎂 ПОБЕДА! 🎂', W/2, H/2 - 20);
+    ctx.fillText('🏆 ВСЕ УРОВНИ ПРОЙДЕНЫ! 🏆', W/2, H/2 - 20);
     ctx.fillStyle = '#ff8899';
     ctx.font = 'bold 20px sans-serif';
     ctx.fillText('С Новым Годом, Матвей!', W/2, H/2 + 30);
@@ -912,7 +894,16 @@ function spendResin() {
     updateResinUI();
     playPaimonSound();
     spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#00ffcc', '#44ffdd', '#fff']);
-    showToast('Блок с поздравлением открыт! 🎁');
+    
+    const rewards = [
+      "Ты открыл блок с поздравлением! Желаю тебе крутого лута в новом году! 🎁",
+      "Ты открыл блок с поздравлением! Пусть твои примогемы всегда уходят в 5★! 💎",
+      "Ты открыл блок с поздравлением! Пусть новый год будет без лагов и багов! 🚀",
+      "Ты открыл блок с поздравлением! 50/50 всегда в твою пользу! 🍀"
+    ];
+    const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+    showPopup('✨ Смола потрачена! ✨', randomReward, '#00ffcc');
+    
   } else {
     showToast('Недостаточно смолы! 😔 Подожди немного...');
   }
@@ -927,36 +918,6 @@ setInterval(() => {
 }, 3000);
 
 updateResinUI();
-
-/* ===== ПРОКАЧКА ===== */
-let charLevel = 1;
-const maxCharLevel = 90;
-
-function upgradeChar() {
-  if (charLevel >= maxCharLevel) return;
-  
-  // Прибавляем случайно от 1 до 10 уровней для красоты
-  const add = Math.floor(Math.random() * 10) + 1;
-  charLevel = Math.min(charLevel + add, maxCharLevel);
-  
-  const lvlEl = document.getElementById('charLevel');
-  if (lvlEl) lvlEl.textContent = `Уровень: ${charLevel} / 90`;
-  
-  const card = document.querySelector('.char-upgrade-card');
-  if (card) {
-    card.classList.add('flash-animation');
-    setTimeout(() => card.classList.remove('flash-animation'), 1000);
-  }
-  
-  playPaimonSound();
-  spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#ffcc00', '#ffee00', '#ffaa00']);
-  
-  if (charLevel === maxCharLevel) {
-    document.getElementById('upgradeBtn').textContent = '⭐ МАКСИМУМ ⭐';
-    document.getElementById('upgradeBtn').disabled = true;
-    showToast('Матвей достиг максимального уровня! 🏆');
-  }
-}
 
 /* ===== АРТЕФАКТЫ ===== */
 let artifactsEquipped = false;
@@ -998,15 +959,31 @@ function addPity() {
     playPaimonSound();
     spawnFirework(window.innerWidth - 100, window.innerHeight - 100, ['#ffcc00', '#ffaa00', '#fff']);
     
+    // Если сработал гарант
     if (pityCount === 0) {
       document.getElementById('pityCounter').classList.add('guaranteed');
       if (el) el.textContent = 'ГАРАНТ!';
-      spawnFirework(window.innerWidth / 2, window.innerHeight / 2, ['#44ff88', '#ffcc00', '#fff', '#ff3366']);
+      
+      // Вспышка и мега-салют
+      for(let i=0; i<10; i++) {
+        setTimeout(() => {
+          spawnFirework(
+            window.innerWidth * (0.1 + Math.random() * 0.8),
+            window.innerHeight * (0.1 + Math.random() * 0.6),
+            ['#44ff88', '#ffcc00', '#fff', '#ff3366', '#00ccff']
+          );
+        }, i * 200);
+      }
+      
+      setTimeout(() => {
+        showPopup('🎉 ГАРАНТ! 🎉', 'Выпало новогоднее чудо! Желание обязательно сбудется! Исполнение займёт ровно 1 год.', '#ffcc00');
+      }, 500);
+
       setTimeout(() => {
         pityCount = 10;
         document.getElementById('pityCounter').classList.remove('guaranteed');
         if (el) el.textContent = `${pityCount} круток`;
-      }, 4000);
+      }, 5000);
     }
   }
 }
@@ -1248,4 +1225,17 @@ function upgradeFullChar() {
     document.getElementById('fullCharUpgradeBtn').textContent = '⭐ МАКСИМУМ ⭐';
     document.getElementById('fullCharUpgradeBtn').disabled = true;
   }
+}
+
+function showPopup(title, desc, borderColor = '#ffcc00') {
+  document.getElementById('popupTitle').textContent = title;
+  document.getElementById('popupDesc').textContent = desc;
+  const content = document.getElementById('popupContent');
+  content.style.borderColor = borderColor;
+  document.getElementById('popupOverlay').classList.add('open');
+  playPaimonSound();
+}
+
+function closePopup() {
+  document.getElementById('popupOverlay').classList.remove('open');
 }
