@@ -252,7 +252,6 @@ function closeCongrats() {
 }
 
 function renderCommissions() {
-  // 1. Рендер на главной
   const list = document.getElementById('commissionsList');
   if (list) {
     list.innerHTML = '';
@@ -280,7 +279,6 @@ function renderCommissions() {
     });
   }
 
-  // 2. Рендер в меню Паймон
   const paimonList = document.getElementById('paimonTasksList');
   if (paimonList) {
     paimonList.innerHTML = '';
@@ -442,15 +440,19 @@ function resetTheme() {
 }
 
 /* ===== PARCOUR ===== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+const W = canvas ? canvas.width : 800;
+const H = canvas ? canvas.height : 400;
+
+let player, platforms, cake, gameState, cameraX, keys;
 let currentLevel = 1;
 const maxLevel = 3;
-let cake = { x: 1420, y: H - 210, w: 40, h: 40 };
-let levelTargets = ['🎂', '🎁', '🏆'];
+const levelTargets = ['🎂', '🎁', '🏆'];
 
 function initGame() {
   player = { x: 50, y: H - 100, w: 30, h: 30, vx: 0, vy: 0, onGround: false };
   
-  // Генерируем платформы в зависимости от уровня
   if (currentLevel === 1) {
     platforms = [
       { x: 0, y: H - 40, w: 200, h: 40 },
@@ -493,6 +495,38 @@ function initGame() {
   keys = {};
 }
 
+document.addEventListener('keydown', (e) => {
+  if (['Space','ArrowUp','KeyW'].includes(e.code)) {
+    if (gameState === 'playing' && player && player.onGround) {
+      e.preventDefault();
+      player.vy = -11;
+      player.onGround = false;
+    }
+  }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = true; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = true; }
+});
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { if(keys) keys.right = false; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { if(keys) keys.left = false; }
+});
+
+if (canvas) {
+  canvas.addEventListener('click', () => {
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -11;
+      player.onGround = false;
+    }
+  });
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (gameState === 'playing' && player.onGround) {
+      player.vy = -11;
+      player.onGround = false;
+    }
+  }, { passive: false });
+}
+
 function updateGame() {
   if (gameState !== 'playing' || !player) return;
   
@@ -514,7 +548,6 @@ function updateGame() {
     }
   });
   
-  // Падение за границу
   if (player.y > H) {
     const hint = document.getElementById('gameHint');
     if (hint) {
@@ -534,7 +567,6 @@ function updateGame() {
   const targetCam = Math.max(0, player.x - W / 3);
   cameraX += (targetCam - cameraX) * 0.1;
   
-  // Достижение финиша
   if (player.x + player.w > cake.x && player.x < cake.x + cake.w &&
       player.y + player.h > cake.y && player.y < cake.y + cake.h) {
     
@@ -567,16 +599,49 @@ function updateGame() {
 }
 
 function drawGame() {
-    // Рисуем цель уровня (торт, подарок или кубок)
+  if (!ctx) return;
+  ctx.fillStyle = '#44001a';
+  ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 50; i++) {
+    const sx = (i * 137 + cameraX * 0.2) % W;
+    const sy = (i * 89) % (H - 100);
+    ctx.fillStyle = `rgba(255, 200, 220, 0.7)`;
+    ctx.fillRect(sx, sy, 2, 2);
+  }
+  ctx.save();
+  ctx.translate(-cameraX, 0);
+  platforms.forEach(p => {
+    const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.h);
+    grad.addColorStop(0, '#ff6688');
+    grad.addColorStop(1, '#cc0033');
+    ctx.fillStyle = grad;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#ff0033';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(p.x, p.y, p.w, 3);
+  });
   ctx.shadowBlur = 25;
   ctx.shadowColor = '#ffcc00';
   ctx.font = '40px serif';
   ctx.textAlign = 'center';
   ctx.fillText(levelTargets[currentLevel-1], cake.x + cake.w/2, cake.y + cake.h);
   ctx.shadowBlur = 0;
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = '#00ffaa';
+  ctx.fillStyle = '#ff3366';
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(player.x + 6, player.y + 8, 6, 6);
+  ctx.fillRect(player.x + 18, player.y + 8, 6, 6);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('🏃 Прыжок: Пробел / ↑ / Тап', 15, 25);
   
-  // (Игрок и платформы рисуются как раньше)
-
   if (gameState === 'won') {
     ctx.fillStyle = 'rgba(0,0,0,0.75)';
     ctx.fillRect(0, 0, W, H);
@@ -623,7 +688,10 @@ document.querySelectorAll('.mobile-btn').forEach(btn => {
   btn.addEventListener('contextmenu', (e) => e.preventDefault());
 });
 
-function startGame() { initGame(); }
+function startGame() { 
+  currentLevel = 1; 
+  initGame(); 
+}
 
 if (canvas) {
   initGame();
@@ -685,14 +753,12 @@ document.addEventListener('keydown', (e) => {
 renderCommissions();
 
 /* ===== ГАЛЕРЕЯ ПЕРСОНАЖЕЙ ===== */
-// Открытие фото персонажа на весь экран
 function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
   const fs = document.getElementById('giftFullscreen');
   const fsContent = fs.querySelector('.gift-fs-content');
   const fsImage = document.getElementById('giftFsImage');
   const fsPlaceholder = document.getElementById('giftFsPlaceholder');
   
-  // Сбрасываем старые классы и ставим новый цвет
   fsContent.className = 'gift-fs-content char-theme-' + elementClass;
   
   if (imgSrc && imgSrc !== 'undefined') {
@@ -715,7 +781,6 @@ function openCharFullscreen(name, elementName, elementClass, imgSrc, desc) {
   spawnSpecialFirework(elementClass, window.innerWidth / 2, window.innerHeight / 2);
 }
 
-// Открытие информации об оружии/артефактах/навыках
 function openCharInfo(charName, category, itemName, itemDesc, elementClass) {
   const fs = document.getElementById('charInfoFullscreen');
   const fsContent = fs.querySelector('.gift-fs-content');
@@ -729,8 +794,6 @@ function openCharInfo(charName, category, itemName, itemDesc, elementClass) {
   `;
 
   if (category === 'Артефакты') {
-    
-    // Уникальные артефакты для каждого персонажа
     const charArtifacts = {
       'Никита': [
         { name: 'Цветок тишины', main: '+4780 HP', sub: '+15% к долгому молчанию' },
@@ -845,7 +908,6 @@ function closeCharInfo(event) {
   document.body.style.overflow = '';
 }
 
-// Закрытие по Escape для обоих окон
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const fs1 = document.getElementById('giftFullscreen');
@@ -909,7 +971,6 @@ function spendResin() {
   }
 }
 
-// Восстановление 1 единицы каждые 3 секунды
 setInterval(() => {
   if (currentResin < maxResin) {
     currentResin += 1;
@@ -959,12 +1020,10 @@ function addPity() {
     playPaimonSound();
     spawnFirework(window.innerWidth - 100, window.innerHeight - 100, ['#ffcc00', '#ffaa00', '#fff']);
     
-    // Если сработал гарант
     if (pityCount === 0) {
       document.getElementById('pityCounter').classList.add('guaranteed');
       if (el) el.textContent = 'ГАРАНТ!';
       
-      // Вспышка и мега-салют
       for(let i=0; i<10; i++) {
         setTimeout(() => {
           spawnFirework(
@@ -1157,15 +1216,13 @@ function openFullCharCard(id) {
   if (!data) return;
   
   currentFullCharId = id;
-  currentFullCharLevel = Math.floor(Math.random() * 50) + 1; // Рандомный стартовый уровень для интереса
+  currentFullCharLevel = Math.floor(Math.random() * 50) + 1;
   
   const fs = document.getElementById('giftFullscreen');
   const fsContent = fs.querySelector('.gift-fs-content');
   
-  // Окрашиваем окно
   fsContent.className = 'gift-fs-content char-theme-' + data.elemClass;
   
-  // Вставляем HTML внутрь
   fsContent.innerHTML = `
     <button class="gift-fs-close" onclick="closeGiftFullscreen(event)">✕</button>
     <div class="full-char-card">
@@ -1227,6 +1284,7 @@ function upgradeFullChar() {
   }
 }
 
+/* ===== ВСПЛЫВАЮЩИЕ ОКНА ===== */
 function showPopup(title, desc, borderColor = '#ffcc00') {
   document.getElementById('popupTitle').textContent = title;
   document.getElementById('popupDesc').textContent = desc;
