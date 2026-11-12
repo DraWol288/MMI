@@ -1460,15 +1460,18 @@ function openTeamBonusModal() {
   
   container.innerHTML = '';
   
-  // Считаем стихии
+  // Считаем стихии в текущем отряде
   const elementCounts = {};
   teamMembers.forEach(id => {
-    const el = charactersData[id].elemClass;
-    elementCounts[el] = (elementCounts[el] || 0) + 1;
+    if (charactersData[id]) {
+      const el = charactersData[id].elemClass;
+      elementCounts[el] = (elementCounts[el] || 0) + 1;
+    }
   });
 
   const uniqueElements = Object.keys(elementCounts).length;
 
+  // Проходим по всем возможным резонансам
   resonances.forEach(res => {
     let isActive = false;
     
@@ -1485,11 +1488,11 @@ function openTeamBonusModal() {
     // Иконки элементов
     let iconsHTML = '';
     if (res.elements[0] === 'unique') {
-      iconsHTML = `<div class="bonus-icon" style="font-size:1.5rem">🌟</div>`;
+      iconsHTML = `<div class="bonus-icon" style="font-size:1.5rem; display:flex; align-items:center; justify-content:center; width:70px;">🌟</div>`;
     } else {
       const el = res.elements[0];
       iconsHTML = `
-        <div class="bonus-icon">
+        <div class="bonus-icon" style="width:70px;">
           <div class="elem elem-${el}">
             <img src="${el === 'pyro' ? 'Pyro.webp' : el === 'hydro' ? 'Hydro.webp' : el === 'electro' ? 'electro.webp' : el === 'geo' ? 'Geo.webp' : el === 'cryo' ? 'Cryo.webp' : el === 'dendro' ? 'dendro.png' : 'anemo.png'}" onerror="this.style.display='none'">
           </div>
@@ -1503,11 +1506,11 @@ function openTeamBonusModal() {
     div.innerHTML = `
       ${iconsHTML}
       <div class="bonus-text">
-        <h4>
+        <h4 style="margin-bottom: 8px; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; color: #fff;">
           ${res.name}
-          <span class="bonus-status ${isActive ? '' : 'off'}">${isActive ? 'Активно ✓' : 'Не активно'}</span>
+          <span class="bonus-status ${isActive ? '' : 'off'}" style="font-size: 0.75rem;">${isActive ? 'Активно ✓' : 'Не активно'}</span>
         </h4>
-        <p>${res.desc}</p>
+        <p style="font-size: 0.85rem; margin: 0;">${res.desc}</p>
       </div>
     `;
     container.appendChild(div);
@@ -1517,7 +1520,6 @@ function openTeamBonusModal() {
   playPaimonSound();
   document.getElementById('teamBonusModal').classList.add('open');
 }
-
 function checkTeamResonances() {
   // Можно добавить визуальное уведомление, если сменился резонанс
 }
