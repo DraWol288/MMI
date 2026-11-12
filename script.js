@@ -1317,6 +1317,8 @@ function closePopup() {
 
 /* ===== СИСТЕМА ОТРЯДА ===== */
 let teamMembers = ['nikita', 'albert', 'sasha', 'matvey']; // Текущий состав (ID из charactersData)
+// НОВАЯ СТРОКА: храним уровни отдельно
+let teamLevels = {}; 
 
 const resonances = [
   {
@@ -1390,6 +1392,11 @@ function renderTeamSlots() {
     slot.className = 'team-slot ' + (charData ? 'filled' : 'empty');
     
     if (charData) {
+      // Если у персонажа еще нет сохраненного уровня — генерируем и запоминаем
+      if (!teamLevels[charId]) {
+        teamLevels[charId] = Math.floor(Math.random() * 40) + 50;
+      }
+      
       slot.onclick = () => removeFromTeam(i);
       slot.innerHTML = `
         <div class="team-slot-element elem-${charData.elemClass}">
@@ -1400,7 +1407,7 @@ function renderTeamSlots() {
         </div>
         <div class="team-slot-info">
           <div class="team-slot-name">${charData.name}</div>
-          <div class="team-slot-level">Ур. ${Math.floor(Math.random() * 40) + 50}</div>
+          <div class="team-slot-level">Ур. ${teamLevels[charId]}</div>
         </div>
       `;
     } else {
