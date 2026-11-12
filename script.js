@@ -1314,3 +1314,209 @@ function showPopup(title, desc, borderColor = '#ffcc00') {
 function closePopup() {
   document.getElementById('popupOverlay').classList.remove('open');
 }
+
+/* ===== СИСТЕМА ОТРЯДА ===== */
+let teamMembers = ['nikita', 'albert', 'sasha', 'matvey']; // Текущий состав (ID из charactersData)
+
+const resonances = [
+  {
+    name: "Нити защиты",
+    elements: ['geo', 'geo'],
+    desc: "Элементальное сопротивление +15%, физ. сопротивление +15%.",
+    icon: "🛡️"
+  },
+  {
+    name: "Пылающий огонь",
+    elements: ['pyro', 'pyro'],
+    desc: "Уменьшает длительность Крио эффекта на 40%. Увеличивает силу атаки на 25%.",
+    icon: "🔥"
+  },
+  {
+    name: "Успокаивающая вода",
+    elements: ['hydro', 'hydro'],
+    desc: "Уменьшает длительность Пиро эффекта на 40%. Увеличивает макс. HP на 25%.",
+    icon: "💧"
+  },
+  {
+    name: "Проворный ветер",
+    elements: ['anemo', 'anemo'],
+    desc: "Уменьшает потребление выносливости на 15%. Увеличивает скорость передвижения на 10%.",
+    icon: "🌪️"
+  },
+  {
+    name: "Высокое напряжение",
+    elements: ['electro', 'electro'],
+    desc: "Уменьшает длительность Гидро эффекта на 40%. Статусы... имеют 100% шанс оставить элементальную частицу Электро.",
+    icon: "⚡"
+  },
+  {
+    name: "Ползучая зелень",
+    elements: ['dendro', 'dendro'],
+    desc: "Увеличивает мастерство стихий на 50 ед. Реакции увеличивают мастерство всех членов отряда.",
+    icon: "🌿"
+  },
+  {
+    name: "Расколотый лёд",
+    elements: ['cryo', 'cryo'],
+    desc: "Уменьшает длительность Электро эффекта на 40%. Увеличивает шанс крит. попадания по замороженным врагам на 15%.",
+    icon: "❄️"
+  },
+  {
+    name: "Разнообразие стихий",
+    elements: ['unique'],
+    desc: "4 неодинаковых элемента. Элементальное сопротивление +15%, физ. сопротивление +15%.",
+    icon: "🌈"
+  }
+];
+
+function openTeamModal() {
+  renderTeamSlots();
+  renderAvailableChars();
+  openModal('teamModal');
+}
+
+// Переопределяем кнопку в Паймон
+document.querySelector('.paimon-panel').innerHTML += `<div class="paimon-item" onclick="openTeamModal()">⚔️ Отряд</div>`;
+
+function renderTeamSlots() {
+  const container = document.getElementById('teamSlots');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const charId = teamMembers[i];
+    const charData = charId ? charactersData[charId] : null;
+    
+    const slot = document.createElement('div');
+    slot.className = 'team-slot ' + (charData ? 'filled' : 'empty');
+    
+    if (charData) {
+      slot.onclick = () => removeFromTeam(i);
+      slot.innerHTML = `
+        <div class="team-slot-element elem-${charData.elemClass}">
+          <img src="${charData.elemClass === 'pyro' ? 'Pyro.webp' : charData.elemClass === 'hydro' ? 'Hydro.webp' : charData.elemClass === 'electro' ? 'electro.webp' : charData.elemClass === 'geo' ? 'Geo.webp' : charData.elemClass === 'cryo' ? 'Cryo.webp' : charData.elemClass === 'dendro' ? 'dendro.png' : 'anemo.png'}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span>${charData.element[0]}</span>'">
+        </div>
+        <div class="team-slot-photo">
+          <img src="${charData.photo}" onerror="this.innerText='👤'">
+        </div>
+        <div class="team-slot-info">
+          <div class="team-slot-name">${charData.name}</div>
+          <div class="team-slot-level">Ур. ${Math.floor(Math.random() * 40) + 50}</div>
+        </div>
+      `;
+    } else {
+      slot.innerHTML = `<div style="color: #555; font-size: 2rem; margin-bottom: 20px;">+</div>`;
+    }
+    container.appendChild(slot);
+  }
+}
+
+function renderAvailableChars() {
+  const container = document.getElementById('teamAvailableList');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  for (const [id, data] of Object.entries(charactersData)) {
+    const isSelected = teamMembers.includes(id);
+    const item = document.createElement('div');
+    item.className = 'team-available-item ' + (isSelected ? 'selected' : '');
+    
+    if (!isSelected) {
+      item.onclick = () => addToTeam(id);
+    }
+    
+    item.innerHTML = `
+      <img src="${data.photo}" onerror="this.innerText='👤'">
+      <div class="name">${data.name}</div>
+    `;
+    container.appendChild(item);
+  }
+}
+
+function addToTeam(id) {
+  if (teamMembers.length >= 4) {
+    showToast('В отряде уже 4 персонажа! Уберите кого-нибудь.');
+    return;
+  }
+  if (!teamMembers.includes(id)) {
+    teamMembers.push(id);
+    playPaimonSound();
+    renderTeamSlots();
+    renderAvailableChars();
+    checkTeamResonances();
+  }
+}
+
+function removeFromTeam(index) {
+  teamMembers.splice(index, 1);
+  playPaimonSound();
+  renderTeamSlots();
+  renderAvailableChars();
+  checkTeamResonances();
+}
+
+function openTeamBonusModal() {
+  const container = document.getElementById('teamBonusList');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  // Считаем стихии
+  const elementCounts = {};
+  teamMembers.forEach(id => {
+    const el = charactersData[id].elemClass;
+    elementCounts[el] = (elementCounts[el] || 0) + 1;
+  });
+
+  const uniqueElements = Object.keys(elementCounts).length;
+
+  resonances.forEach(res => {
+    let isActive = false;
+    
+    if (res.elements[0] === 'unique') {
+      isActive = uniqueElements >= 4;
+    } else {
+      const el = res.elements[0];
+      isActive = (elementCounts[el] || 0) >= 2;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'bonus-item ' + (isActive ? 'active' : 'inactive');
+    
+    // Иконки элементов
+    let iconsHTML = '';
+    if (res.elements[0] === 'unique') {
+      iconsHTML = `<div class="bonus-icon" style="font-size:1.5rem">🌟</div>`;
+    } else {
+      const el = res.elements[0];
+      iconsHTML = `
+        <div class="bonus-icon">
+          <div class="elem elem-${el}">
+            <img src="${el === 'pyro' ? 'Pyro.webp' : el === 'hydro' ? 'Hydro.webp' : el === 'electro' ? 'electro.webp' : el === 'geo' ? 'Geo.webp' : el === 'cryo' ? 'Cryo.webp' : el === 'dendro' ? 'dendro.png' : 'anemo.png'}" onerror="this.style.display='none'">
+          </div>
+          <div class="elem elem-${el}">
+            <img src="${el === 'pyro' ? 'Pyro.webp' : el === 'hydro' ? 'Hydro.webp' : el === 'electro' ? 'electro.webp' : el === 'geo' ? 'Geo.webp' : el === 'cryo' ? 'Cryo.webp' : el === 'dendro' ? 'dendro.png' : 'anemo.png'}" onerror="this.style.display='none'">
+          </div>
+        </div>
+      `;
+    }
+
+    div.innerHTML = `
+      ${iconsHTML}
+      <div class="bonus-text">
+        <h4>
+          ${res.name}
+          <span class="bonus-status ${isActive ? '' : 'off'}">${isActive ? 'Активно ✓' : 'Не активно'}</span>
+        </h4>
+        <p>${res.desc}</p>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  openModal('teamBonusModal');
+}
+
+function checkTeamResonances() {
+  // Можно добавить визуальное уведомление, если сменился резонанс
+}
