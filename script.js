@@ -1369,10 +1369,11 @@ function renderTeamSlots() {
     const charData = charId ? charactersData[charId] : null;
     
     const slot = document.createElement('div');
-    slot.className = 'team-slot ' + (charData ? 'filled' : 'empty');
     
     if (charData) {
-      // Если уровень не задан — генерируем и сохраняем в базу
+      // Добавляем класс цвета стихии к самому слоту (elem-pyro-bg и т.д.)
+      slot.className = 'team-slot filled ' + 'elem-' + charData.elemClass + '-bg';
+      
       if (!charData.level) {
         charData.level = Math.floor(Math.random() * 50) + 1;
       }
@@ -1391,6 +1392,7 @@ function renderTeamSlots() {
         </div>
       `;
     } else {
+      slot.className = 'team-slot empty';
       slot.innerHTML = `<div style="color: #555; font-size: 2rem; margin-bottom: 20px;">+</div>`;
     }
     container.appendChild(slot);
