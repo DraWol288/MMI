@@ -46,6 +46,7 @@
     <div class="paimon-item" onclick="openModal('tasksModal')">📋 Задания</div>
     <div class="paimon-item" onclick="openModal('inventoryModal')">🎒 Инвентарь</div>
     <div class="paimon-item" onclick="openModal('charactersModal')">👥 Персонажи</div>
+    <div class="paimon-item" onclick="openModal('teamModal')">⚔️ Отряд</div>
     <div class="paimon-item" onclick="openModal('mailModal')">✉️ Почта</div>
   </div>
 </div>
@@ -289,6 +290,41 @@
         <h4 id="charInfoItemName" style="color:#fff; font-size: 1.3rem; margin-bottom: 10px;">Название</h4>
         <p id="charInfoItemDesc" style="color:#ffddee; font-size: 1.1rem; line-height: 1.6;">Описание</p>
       </div>
+    </div>
+  </div>
+</div>
+
+  <!-- ===== ОТРЯД ===== -->
+<div class="modal-overlay" id="teamModal">
+  <div class="modal" style="max-width: 900px; background: linear-gradient(160deg, #2a0008, #150005);">
+    <button class="modal-close" onclick="closeModal('teamModal')">✕</button>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="margin: 0;">⚔️ Отряд</h3>
+      <button class="game-btn" style="background: #4a3b1a; border-color: #ffcc00; color: #ffcc00; font-size: 0.9rem;" onclick="openModal('teamBonusModal')">📊 Бонус отряда</button>
+    </div>
+
+    <!-- Слоты отряда -->
+    <div class="team-slots" id="teamSlots">
+      <!-- Генерируется через JS -->
+    </div>
+
+    <!-- Список доступных персонажей -->
+    <h4 style="color: #ffcc00; margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid #ff6688; padding-bottom: 10px;">Выберите персонажей (макс. 4):</h4>
+    <div class="team-available-list" id="teamAvailableList">
+      <!-- Генерируется через JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== БОНУС ОТРЯДА ===== -->
+<div class="modal-overlay" id="teamBonusModal">
+  <div class="modal" style="max-width: 700px; background: linear-gradient(160deg, #1a0b2e, #0a0514);">
+    <button class="modal-close" onclick="closeModal('teamBonusModal')">✕</button>
+    <h3 style="text-align: center; border-bottom: 2px solid #555; padding-bottom: 15px;">Бонус отряда / Элементальный резонанс</h3>
+    
+    <div id="teamBonusList" style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+      <!-- Генерируется через JS -->
     </div>
   </div>
 </div>
