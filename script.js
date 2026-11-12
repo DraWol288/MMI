@@ -1372,7 +1372,9 @@ const resonances = [
 function openTeamModal() {
   renderTeamSlots();
   renderAvailableChars();
-  openModal('teamModal');
+  document.getElementById('teamModal').classList.add('open');
+  document.getElementById('paimonPanel').classList.remove('open');
+  playPaimonSound();
 }
 
 function renderTeamSlots() {
