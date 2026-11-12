@@ -1233,7 +1233,12 @@ function openFullCharCard(id) {
   if (!data) return;
   
   currentFullCharId = id;
-  currentFullCharLevel = Math.floor(Math.random() * 50) + 1;
+  
+  // Если у персонажа еще нет уровня в базе, генерируем его и сохраняем
+  if (!data.level) {
+    data.level = Math.floor(Math.random() * 50) + 1;
+  }
+  currentFullCharLevel = data.level;
   
   const fs = document.getElementById('giftFullscreen');
   const fsContent = fs.querySelector('.gift-fs-content');
@@ -1278,10 +1283,12 @@ function openFullCharCard(id) {
 }
 
 function upgradeFullChar() {
-  if (currentFullCharLevel >= 90) return;
+  const data = charactersData[currentFullCharId];
+  if (!data || data.level >= 90) return;
   
   const add = Math.floor(Math.random() * 10) + 1;
-  currentFullCharLevel = Math.min(currentFullCharLevel + add, 90);
+  data.level = Math.min(data.level + add, 90); // Сохраняем в базу
+  currentFullCharLevel = data.level;
   
   const lvlEl = document.getElementById('fullCharLevelText');
   if (lvlEl) lvlEl.textContent = `Уровень: ${currentFullCharLevel} / 90`;
@@ -1392,9 +1399,9 @@ function renderTeamSlots() {
     slot.className = 'team-slot ' + (charData ? 'filled' : 'empty');
     
     if (charData) {
-      // Если у персонажа еще нет сохраненного уровня — генерируем и запоминаем
-      if (!teamLevels[charId]) {
-        teamLevels[charId] = Math.floor(Math.random() * 40) + 50;
+      // Если уровень не задан — генерируем и сохраняем в базу
+      if (!charData.level) {
+        charData.level = Math.floor(Math.random() * 50) + 1;
       }
       
       slot.onclick = () => removeFromTeam(i);
@@ -1407,7 +1414,7 @@ function renderTeamSlots() {
         </div>
         <div class="team-slot-info">
           <div class="team-slot-name">${charData.name}</div>
-          <div class="team-slot-level">Ур. ${teamLevels[charId]}</div>
+          <div class="team-slot-level">Ур. ${charData.level}</div>
         </div>
       `;
     } else {
