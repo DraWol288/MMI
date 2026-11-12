@@ -1375,9 +1375,6 @@ function openTeamModal() {
   openModal('teamModal');
 }
 
-// Переопределяем кнопку в Паймон
-document.querySelector('.paimon-panel').innerHTML += `<div class="paimon-item" onclick="openTeamModal()">⚔️ Отряд</div>`;
-
 function renderTeamSlots() {
   const container = document.getElementById('teamSlots');
   if (!container) return;
@@ -1514,6 +1511,10 @@ function openTeamBonusModal() {
     container.appendChild(div);
   });
 
+  // Открываем окно с бонусами, НЕ закрывая окно отряда
+  playPaimonSound();
+  document.getElementById('teamBonusModal').classList.add('open');
+}
   openModal('teamBonusModal');
 }
 
