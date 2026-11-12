@@ -1515,8 +1515,6 @@ function openTeamBonusModal() {
   playPaimonSound();
   document.getElementById('teamBonusModal').classList.add('open');
 }
-  openModal('teamBonusModal');
-}
 
 function checkTeamResonances() {
   // Можно добавить визуальное уведомление, если сменился резонанс
