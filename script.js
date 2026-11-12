@@ -997,33 +997,6 @@ setInterval(() => {
 
 updateResinUI();
 
-/* ===== АРТЕФАКТЫ ===== */
-let artifactsEquipped = false;
-
-function equipAllArtifacts() {
-  const cards = document.querySelectorAll('.artifact-card');
-  artifactsEquipped = !artifactsEquipped;
-  
-  cards.forEach((card, i) => {
-    setTimeout(() => {
-      if (artifactsEquipped) {
-        card.classList.add('equipped');
-        spawnFirework(
-          window.innerWidth * (0.2 + Math.random() * 0.6),
-          window.innerHeight * (0.2 + Math.random() * 0.4),
-          ['#44ff88', '#ffcc00']
-        );
-      } else {
-        card.classList.remove('equipped');
-      }
-    }, i * 150);
-  });
-  
-  playPaimonSound();
-  const btn = document.getElementById('equipAllBtn');
-  if (btn) btn.textContent = artifactsEquipped ? '❌ Снять всё' : '✨ Надеть всё';
-}
-
 /* ===== ПИТИ ===== */
 let pityCount = 10;
 const maxPity = 10;
