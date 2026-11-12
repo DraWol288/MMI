@@ -2372,3 +2372,18 @@ footer {
 #teamBonusModal {
   z-index: 900; /* Окно отряда имеет z-index: 800, поэтому это будет выше */
 }
+
+/* ===== ЦВЕТА РАМОК В ОТРЯДЕ (ПО СТИХИЯМ) ===== */
+.team-slot.elem-pyro-bg { border-color: #ff4422; box-shadow: inset 0 0 20px rgba(255, 68, 34, 0.2), 0 0 15px rgba(255, 68, 34, 0.3); }
+.team-slot.elem-hydro-bg { border-color: #2288ff; box-shadow: inset 0 0 20px rgba(34, 136, 255, 0.2), 0 0 15px rgba(34, 136, 255, 0.3); }
+.team-slot.elem-electro-bg { border-color: #cc44ff; box-shadow: inset 0 0 20px rgba(204, 68, 255, 0.2), 0 0 15px rgba(204, 68, 255, 0.3); }
+.team-slot.elem-geo-bg { border-color: #ffaa00; box-shadow: inset 0 0 20px rgba(255, 170, 0, 0.2), 0 0 15px rgba(255, 170, 0, 0.3); }
+.team-slot.elem-cryo-bg { border-color: #44ffdd; box-shadow: inset 0 0 20px rgba(68, 255, 221, 0.2), 0 0 15px rgba(68, 255, 221, 0.3); }
+.team-slot.elem-dendro-bg { border-color: #66ff44; box-shadow: inset 0 0 20px rgba(102, 255, 68, 0.2), 0 0 15px rgba(102, 255, 68, 0.3); }
+.team-slot.elem-anemo-bg { border-color: #00ffaa; box-shadow: inset 0 0 20px rgba(0, 255, 170, 0.2), 0 0 15px rgba(0, 255, 170, 0.3); }
+
+/* Убираем старую желтую заливку при наведении, чтобы не перекрывала цвета */
+.team-slot.filled:hover {
+  box-shadow: 0 0 25px currentColor;
+  filter: brightness(1.2);
+}
