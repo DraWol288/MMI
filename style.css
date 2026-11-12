@@ -2368,3 +2368,7 @@ footer {
   .team-slot-element { width: 20px; height: 20px; top: -8px; border-width: 1px; }
   .team-slot-element span { font-size: 0.8rem; }
 }
+
+#teamBonusModal {
+  z-index: 900; /* Окно отряда имеет z-index: 800, поэтому это будет выше */
+}
