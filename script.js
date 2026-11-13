@@ -234,12 +234,12 @@ function checkAllCompleted() {
     setTimeout(() => {
       const banner = document.getElementById('congratsBanner');
       if (banner) banner.classList.add('show');
-      for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 4; i++) { // Уменьшили с 8 до 4
         setTimeout(() => spawnFirework(
           window.innerWidth * (0.15 + Math.random() * 0.7),
           window.innerHeight * (0.15 + Math.random() * 0.5),
           ['#ff0033','#ffcc00','#44ff88','#ff66cc','#ffffff']
-        ), i * 250);
+        ), i * 200);
       }
       playPaimonSound();
     }, 400);
@@ -321,10 +321,11 @@ function renderCommissions() {
   }
 }
 
-/* ===== FIREWORKS ===== */
+/* ===== FIREWORKS (ОПТИМИЗИРОВАННЫЕ) ===== */
 const fireCanvas = document.getElementById('fireworksCanvas');
 const fireCtx = fireCanvas ? fireCanvas.getContext('2d') : null;
 let particles = [];
+const MAX_PARTICLES = 1000; // Ограничение, чтобы не лагало
 
 function resizeFire() {
   if (!fireCanvas) return;
@@ -335,8 +336,10 @@ resizeFire();
 window.addEventListener('resize', resizeFire);
 
 function spawnFirework(x, y, colors) {
-  for (let i = 0; i < 60; i++) {
-    const angle = (Math.PI * 2 * i) / 60;
+  if (particles.length > MAX_PARTICLES) return; // Защита от переполнения
+
+  for (let i = 0; i < 40; i++) { // Уменьшили с 60 до 40 частиц
+    const angle = (Math.PI * 2 * i) / 40;
     const speed = 2 + Math.random() * 4;
     particles.push({
       x, y,
@@ -344,23 +347,26 @@ function spawnFirework(x, y, colors) {
       vy: Math.sin(angle) * speed,
       life: 1,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: 2 + Math.random() * 3
+      size: 2 + Math.random() * 2
     });
   }
 }
 
 function spawnSpecialFirework(type, x, y) {
+  if (particles.length > MAX_PARTICLES) return;
+
   const configs = {
-    pyro: { colors: ['#ff4400','#ff8800','#ffcc00','#ff2200'], count: 100, speed: 6 },
-    hydro: { colors: ['#0088ff','#00ccff','#44ddff','#0066ff'], count: 80, speed: 5 },
-    electro: { colors: ['#cc00ff','#dd44ff','#ee88ff','#ff00cc'], count: 90, speed: 7 },
-    geo: { colors: ['#ffaa00','#ffcc00','#ffdd44','#cc8800'], count: 70, speed: 5 },
-    cryo: { colors: ['#00ffcc','#44ffdd','#88ffee','#00ddaa'], count: 80, speed: 5.5 },
-    dendro: { colors: ['#44ff00','#66ff44','#88ff66','#22aa00'], count: 85, speed: 5 },
-    anemo: { colors: ['#00ffaa','#44ffcc','#88ffee','#00dd88'], count: 90, speed: 6.5 }
+    pyro: { colors: ['#ff4400','#ff8800','#ffcc00','#ff2200'], count: 60, speed: 5 },
+    hydro: { colors: ['#0088ff','#00ccff','#44ddff','#0066ff'], count: 50, speed: 4.5 },
+    electro: { colors: ['#cc00ff','#dd44ff','#ee88ff','#ff00cc'], count: 55, speed: 6 },
+    geo: { colors: ['#ffaa00','#ffcc00','#ffdd44','#cc8800'], count: 50, speed: 4.5 },
+    cryo: { colors: ['#00ffcc','#44ffdd','#88ffee','#00ddaa'], count: 50, speed: 5 },
+    dendro: { colors: ['#44ff00','#66ff44','#88ff66','#22aa00'], count: 55, speed: 4.5 },
+    anemo: { colors: ['#00ffaa','#44ffcc','#88ffee','#00dd88'], count: 60, speed: 5.5 }
   };
   const cfg = configs[type];
   if (!cfg) return;
+  
   for (let i = 0; i < cfg.count; i++) {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * cfg.speed + 1;
@@ -370,7 +376,7 @@ function spawnSpecialFirework(type, x, y) {
       vy: Math.sin(angle) * speed,
       life: 1,
       color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
-      size: 2 + Math.random() * 3
+      size: 2 + Math.random() * 2
     });
   }
 }
@@ -378,28 +384,27 @@ function spawnSpecialFirework(type, x, y) {
 function animateFire() {
   if (!fireCtx) return;
   fireCtx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
+  
   particles = particles.filter(p => p.life > 0);
+  
+  // Используем быструю заливку без теней для производительности
   particles.forEach(p => {
     p.x += p.vx;
     p.y += p.vy;
     p.vy += 0.05;
     p.vx *= 0.98;
     p.vy *= 0.98;
-    p.life -= 0.012;
-    fireCtx.globalAlpha = p.life;
+    p.life -= 0.015; // Чуть быстрее исчезают
+    
+    fireCtx.globalAlpha = Math.max(0, p.life);
     fireCtx.fillStyle = p.color;
-    fireCtx.shadowBlur = 15;
-    fireCtx.shadowColor = p.color;
-    fireCtx.beginPath();
-    fireCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    fireCtx.fill();
+    fireCtx.fillRect(p.x, p.y, p.size, p.size); // Квадраты рендерятся быстрее, чем круги
   });
+  
   fireCtx.globalAlpha = 1;
-  fireCtx.shadowBlur = 0;
   requestAnimationFrame(animateFire);
 }
 animateFire();
-
 const reactionCombos = {
   pyro: '🔥 Пиро-реакция: Огненный фейерверк!',
   hydro: '💧 Гидро-реакция: Волна счастья!',
@@ -1014,7 +1019,7 @@ function addPity() {
       document.getElementById('pityCounter').classList.add('guaranteed');
       if (el) el.textContent = 'ГАРАНТ!';
       
-      for(let i=0; i<10; i++) {
+            for(let i=0; i<5; i++) { // Уменьшили с 10 до 5 залпов
         setTimeout(() => {
           spawnFirework(
             window.innerWidth * (0.1 + Math.random() * 0.8),
