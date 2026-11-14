@@ -1146,7 +1146,7 @@ const charactersData = {
     ]
   },
   matvey: {
-    name: 'Матвей', rarity: '5★', element: 'Гидро', elemClass: 'hydro', photo: 'matvey.png',
+    name: 'Матвей', rarity: '5★', element: 'Гидро', elemClass: 'hydro', photo: 'matvey3.png',
     jokeElement: 'Прокрастинация',
     weapon: 'Ноутбук «Игровой Ультиматум»',
     passive: '+20% к скорости сдачи лабы в последнюю ночь. Сон восстанавливает 50% энергии, но еда дает лишь 10%.',
