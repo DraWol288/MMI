@@ -1517,3 +1517,125 @@ function openTeamBonusModal() {
 function checkTeamResonances() {
   // Можно добавить визуальное уведомление, если сменился резонанс
 }
+
+/* ===== АНИМИРОВАННОЕ РУКОПОЖАТИЕ ===== */
+const hsCanvas = document.getElementById('handshakeCanvas');
+const hsCtx = hsCanvas ? hsCanvas.getContext('2d') : null;
+let hsParticles = [];
+let hsAngle = 0;
+
+// Класс для одной точки (частицы)
+class PointParticle {
+  constructor(x, y, color) {
+    this.baseX = x;
+    this.baseY = y;
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.size = 1 + Math.random() * 2; // Случайный размер точки
+    this.phase = Math.random() * Math.PI * 2; // Фаза для плавного покачивания
+  }
+
+  update(angle, time) {
+    // 1. Вращаем точки вокруг центра
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    
+    // Центр холста
+    const cx = hsCanvas.width / 2;
+    const cy = hsCanvas.height / 2;
+    
+    // Координаты относительно центра
+    const dx = this.baseX - cx;
+    const dy = this.baseY - cy;
+    
+    // Вращение
+    let newX = cx + (dx * cos - dy * sin);
+    let newY = cy + (dx * sin + dy * cos);
+    
+    // 2. Легкое "дыхание" (пульсация) частиц
+    const pulse = Math.sin(time + this.phase) * 2;
+    this.x = newX + pulse;
+    this.y = newY + pulse;
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function initHandshake() {
+  if (!hsCanvas || !hsCtx) return;
+
+  const img = new Image();
+  img.src = 'handshake.png'; // Путь к твоей картинке
+
+  img.onload = () => {
+    // Создаем временный холст для чтения пикселей
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = hsCanvas.width;
+    tempCanvas.height = hsCanvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    // Рисуем картинку вписав её в наш холст
+    const scale = Math.min(hsCanvas.width / img.width, hsCanvas.height / img.height) * 0.8;
+    const w = img.width * scale;
+    const h = img.height * scale;
+    const x = (hsCanvas.width - w) / 2;
+    const y = (hsCanvas.height - h) / 2;
+
+    tempCtx.drawImage(img, x, y, w, h);
+    const imgData = tempCtx.getImageData(0, 0, hsCanvas.width, hsCanvas.height);
+    const pixels = imgData.data;
+
+    hsParticles = [];
+    const step = 4; // Шаг: чем меньше, тем больше точек и тяжелее анимация (4 - оптимально)
+
+    for (let py = 0; py < hsCanvas.height; py += step) {
+      for (let px = 0; px < hsCanvas.width; px += step) {
+        const index = (py * hsCanvas.width + px) * 4;
+        const alpha = pixels[index + 3]; // Прозрачность
+
+        // Если пиксель не прозрачный (это часть рисунка)
+        if (alpha > 128) {
+          // Чередуем красный неон и белый
+          const isRed = Math.random() > 0.3; 
+          const color = isRed ? '#ff0033' : '#ffffff';
+          hsParticles.push(new PointParticle(px, py, color));
+        }
+      }
+    }
+
+    animateHandshake();
+  };
+}
+
+function animateHandshake() {
+  if (!hsCtx || !hsCanvas) return;
+
+  const time = Date.now() * 0.002;
+  
+  // Увеличиваем угол вращения
+  hsAngle += 0.003;
+
+  hsCtx.clearRect(0, 0, hsCanvas.width, hsCanvas.height);
+
+  // Включаем неоновое свечение для частиц
+  hsCtx.shadowBlur = 10;
+  hsCtx.shadowColor = '#ff0033';
+
+  hsParticles.forEach(p => {
+    p.update(hsAngle, time);
+    p.draw(hsCtx);
+  });
+
+  hsCtx.shadowBlur = 0;
+
+  requestAnimationFrame(animateHandshake);
+}
+
+// Запускаем, когда страница загрузится
+window.addEventListener('load', initHandshake);
