@@ -2387,3 +2387,39 @@ footer {
   box-shadow: 0 0 25px currentColor;
   filter: brightness(1.2);
 }
+
+/* ===== АНИМИРОВАННОЕ РУКОПОЖАТИЕ ===== */
+.handshake-section {
+  padding: 80px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(255,0,51,0.1) 0%, transparent 70%);
+}
+
+.handshake-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  /* Добавляем неоновое свечение вокруг холста */
+  filter: drop-shadow(0 0 20px rgba(255, 0, 51, 0.5));
+}
+
+#handshakeCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+#handshakeCanvas:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .handshake-canvas-wrap {
+    max-width: 90vw;
+  }
+}
