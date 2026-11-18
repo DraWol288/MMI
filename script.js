@@ -1571,7 +1571,7 @@ function initHandshake() {
   if (!hsCanvas || !hsCtx) return;
 
   const img = new Image();
-  img.src = 'handshake.png'; // Путь к твоей картинке
+  img.src = 'handshake.webp'; // Путь к твоей картинке
 
   img.onload = () => {
     // Создаем временный холст для чтения пикселей
