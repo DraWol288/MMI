@@ -1536,11 +1536,7 @@ class PointParticle {
     this.phase = Math.random() * Math.PI * 2; // Фаза для плавного покачивания
   }
 
-  update(angle, time) {
-    // 1. Вращаем точки вокруг центра
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-    
+   update(angle, time) {
     // Центр холста
     const cx = hsCanvas.width / 2;
     const cy = hsCanvas.height / 2;
@@ -1549,23 +1545,30 @@ class PointParticle {
     const dx = this.baseX - cx;
     const dy = this.baseY - cy;
     
-    // Вращение
-    let newX = cx + (dx * cos - dy * sin);
-    let newY = cy + (dx * sin + dy * cos);
+    // ЭФФЕКТ 3D ВРАЩЕНИЯ ПО ГОРИЗОНТАЛИ (вокруг оси Y)
+    // Мы сжимаем ось X с помощью косинуса, создавая иллюзию поворота
+    const cos = Math.cos(angle);
     
-    // 2. Легкое "дыхание" (пульсация) частиц
-    const pulse = Math.sin(time + this.phase) * 2;
+    let newX = cx + dx * cos;
+    let newY = cy + dy;
+    
+    // Легкое "дыхание" (пульсация) частиц
+    const pulse = Math.sin(time + this.phase) * 1.5;
     this.x = newX + pulse;
     this.y = newY + pulse;
+    
+    // Изменяем размер частиц в зависимости от угла (эффект приближения/удаления)
+    // Когда точки на "краю", они кажутся меньше, когда в центре — больше
+    this.currentSize = this.size * (0.5 + 0.5 * Math.abs(cos));
   }
 
-  draw(ctx) {
+    draw(ctx) {
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    // Используем this.currentSize, который меняется при вращении
+    ctx.arc(this.x, this.y, this.currentSize || this.size, 0, Math.PI * 2);
     ctx.fill();
   }
-}
 
 function initHandshake() {
   if (!hsCanvas || !hsCtx) return;
