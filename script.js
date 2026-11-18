@@ -1569,6 +1569,7 @@ class PointParticle {
     ctx.arc(this.x, this.y, this.currentSize || this.size, 0, Math.PI * 2);
     ctx.fill();
   }
+}
 
 function initHandshake() {
   if (!hsCanvas || !hsCtx) return;
