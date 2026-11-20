@@ -1,14 +1,8 @@
 :root { color-scheme: only light; }
 
 /* ===== КУРСОР В СТИЛЕ GENSHIN ===== */
-body {
-  /* Указываем картинку, её размер и точку нажатия */
-  cursor: url('cursor.png') 0 0, auto;
-}
-
-/* Для интерактивных элементов (кнопки, ссылки, карточки) */
-a, button, .paimon-item, .char-act-btn, .game-btn, .elem-btn, .theme-reset-btn, .mobile-btn, .wish-btn, .gift-card, .char-photo {
-  cursor: url('cursor.png') 0 0, pointer;
+body, a, button, input, textarea, select, .paimon-item, .char-act-btn, .game-btn, .elem-btn, .theme-reset-btn, .mobile-btn, .wish-btn, .gift-card, .char-photo, .modal-close, .close-results {
+  cursor: url('cursor.png') 0 0, auto !important;
 }
 
 * { 
