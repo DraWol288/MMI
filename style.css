@@ -2,12 +2,13 @@
 
 /* ===== КУРСОР В СТИЛЕ GENSHIN ===== */
 body {
-  cursor: url('cursor.png') 4 4, auto;
+  /* Указываем картинку, её размер и точку нажатия */
+  cursor: url('cursor.png') 0 0, auto;
 }
 
-/* Чтобы курсор-рука (при наведении на кнопки) тоже был стилизованным */
-a, button, .paimon-item, .char-act-btn, .game-btn, .elem-btn, .theme-reset-btn, .mobile-btn, .wish-btn, .gift-card {
-  cursor: url('cursor.png') 4 4, pointer;
+/* Для интерактивных элементов (кнопки, ссылки, карточки) */
+a, button, .paimon-item, .char-act-btn, .game-btn, .elem-btn, .theme-reset-btn, .mobile-btn, .wish-btn, .gift-card, .char-photo {
+  cursor: url('cursor.png') 0 0, pointer;
 }
 
 * { 
