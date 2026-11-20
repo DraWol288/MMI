@@ -1,5 +1,15 @@
 :root { color-scheme: only light; }
 
+/* ===== КУРСОР В СТИЛЕ GENSHIN ===== */
+body {
+  cursor: url('cursor.png') 4 4, auto;
+}
+
+/* Чтобы курсор-рука (при наведении на кнопки) тоже был стилизованным */
+a, button, .paimon-item, .char-act-btn, .game-btn, .elem-btn, .theme-reset-btn, .mobile-btn, .wish-btn, .gift-card {
+  cursor: url('cursor.png') 4 4, pointer;
+}
+
 * { 
   margin: 0; 
   padding: 0; 
